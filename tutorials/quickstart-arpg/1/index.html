@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>第01课：梦开始的地方 —— GridMap 高级配置与关卡搭建 · 老李游戏学院</title><script>
+      try { document.documentElement.dataset.theme = localStorage.getItem("laoli-theme") || "light"; } catch {}
+    </script><style>:root{color-scheme:light;--bg: #faf9f6;--fg: #171c24;--border: #d9d9d3;--panel: #fff;--accent: #245784}:root[data-theme=dark]{color-scheme:dark;--bg: #10151c;--fg: #f1f2f4;--border: #37424e;--panel: #1a222c;--accent: #9acafa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,sans-serif}a{color:var(--accent)}button{font:inherit;cursor:pointer}.shell{width:min(1100px,calc(100% - 32px));margin-inline:auto}.bar,.bar nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap}header.bar{justify-content:space-between;padding-block:20px}footer.bar{margin-block-start:64px;padding-block:20px;border-top:1px solid var(--border)}.brand{font-weight:750;color:inherit;text-decoration:none}.hero{display:grid;isolation:isolate;position:relative;align-items:end;min-height:clamp(310px,48vw,500px);overflow:hidden;border-radius:16px;color:#fff;background:#172630}.hero img,.hero:after{position:absolute;inset:0;width:100%;height:100%}.hero img{object-fit:cover;z-index:-2}.hero:after{content:"";background:linear-gradient(transparent,#080e14eb);z-index:-1}.hero>div{padding:clamp(20px,5vw,52px)}.hero h1{font-size:clamp(1.8rem,5vw,3rem);margin:0}.button{display:inline-block;background:#fff;color:#163550;border-radius:6px;padding:8px 14px;text-decoration:none}.home-series{margin-top:36px}.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}.catalog-header{display:flex;align-items:center;justify-content:space-between;gap:12px}#course-views button{border:1px solid var(--border);background:var(--panel);color:var(--fg);padding:4px 10px;border-radius:6px}#course-views button[aria-pressed=true]{background:var(--accent);color:var(--bg)}.course-card{flex-direction:column;justify-content:start;padding:0;gap:0;overflow:hidden;text-decoration:none}.course-card img{width:100%;height:auto;aspect-ratio:16 / 9;object-fit:cover}.course-copy{display:grid;gap:4px;padding:14px 18px}.course-grid[data-view=list]{grid-template-columns:minmax(0,1fr)}.course-grid[data-view=list] .course-card{flex-direction:row;align-items:center}.course-grid[data-view=list] img{width:clamp(96px,26%,208px);flex-shrink:0}.course-card:hover strong{text-decoration:underline}.course-card span{color:var(--fg)}.action-links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-block:16px}.project-preview{display:block;max-width:100%;height:auto;border-radius:12px}.panel{display:flex;gap:12px;justify-content:space-between;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px}.series li{padding-block:5px}.reading{display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;align-items:start}aside{padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px}aside ol,aside ul{padding-left:22px}aside [aria-current]{font-weight:750;color:var(--fg)}article{min-width:0;max-width:76ch;overflow-wrap:anywhere}article h1{line-height:1.25;margin-top:0}article img{max-width:100%;height:auto;border-radius:6px}article pre{overflow:auto;padding:16px;border-radius:8px}@media(max-width:720px){.reading{grid-template-columns:minmax(0,1fr);gap:20px}}
+</style></head> <body> <header class="shell bar"> <a class="brand" href="/laoli-academy/">老李游戏学院</a> <nav aria-label="主导航"> <a href="/laoli-academy/catalog/">课程</a> <a href="/laoli-academy/#showcase">作品与源码</a> <a href="/laoli-academy/en/" lang="en" hreflang="en">English</a> <button id="theme" type="button">切换主题</button> </nav> </header> <main class="shell"> <p><a href="../">← 2 小时上手 Godot</a></p> <div class="reading"> <aside> <nav aria-label="系列章节"> <strong>系列章节</strong> <ol> <li><a href="../1/" aria-current="page">第01课：梦开始的地方 —— GridMap 高级配置与关卡搭建</a></li><li><a href="../2/">第02课：英雄的步伐 —— 角色控制、随身光环与交互基础</a></li><li><a href="../3/">第03课：视界巡航 —— 镜头平滑过渡与交互传送</a></li><li><a href="../4/">第04课：杀戮的代价 —— 战斗判定、物理掉落与逻辑闭环</a></li><li><a href="../5/">【番外篇】神兵天降 —— 接入“老李通用背包插件”</a></li> </ol> </nav> <details> <summary>本课目录</summary> <ul><li><a href="#本课目标">本课目标：</a></li></ul> </details> </aside> <article> <h1>第01课：梦开始的地方 —— GridMap 高级配置与关卡搭建</h1> <p>大家好，我是<strong>玩物不丧志的老李</strong>。</p>
+<p>很多朋友想做独立游戏，尤其是那种经典复古的俯视角（Top-Down）地牢探险游戏。
+在 Godot 游戏引擎 中，最适合的3D关卡搭建工具莫过于 <strong>GridMap（网格地图）</strong>。</p>
+<p>但 GridMap 也是出了名的“坑多”。模型对不齐？材质改不了？碰撞不对劲？
+今天这第一节课，我将带你走一遍<strong>完整的 GridMap 配置流程</strong>。
+我们要避开所有坑，用 15 分钟搭建出一个包含大厅、地牢和BOSS房的完整关卡雏形。</p>
+<h2 id="本课目标"><strong>本课目标：</strong></h2>
+<ol>
+<li>掌握 Godot 4 的高级导入设置（自动生成碰撞与材质提取）。</li>
+<li>制作网格库并解决 GridMap 的“对齐”难题。</li>
+<li>搭建“大厅-地牢-BOSS”三房结构。</li>
+<li>配置透视摄像机与环境光效。</li>
+</ol>
+<hr>
+<h3 id="第一步高级导入设置--一劳永逸">第一步：高级导入设置 —— 一劳永逸</h3>
+<p>我们要使用的是 <a href="https://kaylousberg.itch.io/kaykit-dungeon-remastered"><strong>KayKit Dungeon Remastered</strong></a> 素材包。在把它们拖进场景前，我们需要进行一次“深度加工”，确保它们自带碰撞且材质可编辑。</p>
+<p><strong>1. 开启高级导入</strong></p>
+<p>将模型文件拖入 <code>res://assets/models/</code> 后，<strong>双击</strong>你需要使用的模型文件（如 <code>floor.gltf</code>），或者选中文件后点击“导入”面板的“高级”按钮，弹出<strong>高级导入设置</strong>窗口。</p>
+<p><strong>2. 自动生成物理碰撞 (Physics)</strong></p>
+<p>我们不希望手动给几百块地板加碰撞体。</p>
+<ul>
+<li>在左侧的场景树结构中，选中 <strong>Mesh</strong> 节点（网格节点）。</li>
+<li>在右侧属性栏找到 <strong>生成 (Generate)</strong> -> <strong>物理 (Physics)</strong>，勾选 <strong>启用 (On)</strong>。</li>
+<li><strong>物理实体类型 (Body Type)</strong>：保持默认的 <strong>Static (静态)</strong>。</li>
+<li><strong>形状类型 (Shape Type)</strong>：修改为 <strong>Simple Convex (简单凸包)</strong>。Simple Convex 比 Trimesh 性能更好，比 Box 更贴合形状，非常适合地牢方块。</li>
+<li><strong>物理层 (Layer)</strong>：保持默认的 Layer 1，我们可以去项目设置里把 Layer 1 重命名为“环境层 (Environment)”。</li>
+</ul>
+<p><img alt="高级导入设置" loading="lazy" decoding="async" fetchpriority="auto" width="2050" height="1184" src="/laoli-academy/_astro/1-1%E9%AB%98%E7%BA%A7%E5%AF%BC%E5%85%A5%E8%AE%BE%E7%BD%AE.8bYaO9U9_ZJRKGa.png" ></p>
+<p><strong>3. 材质提取 (Material Extraction)</strong></p>
+<p>为了方便以后统一修改地牢的色调（比如把地板变红），我们需要把材质提取出来。</p>
+<ul>
+<li>关闭高级窗口，回到主界面的 <strong>导入 (Import)</strong> 面板。</li>
+<li>找到 <strong>材质 (Materials)</strong> 分组。</li>
+<li><strong>位置 (Location)</strong>：选择 <strong>Extract and Overwrite (提取并覆盖)</strong>。这表示我们将材质文件保存到外部，并让模型引用它。</li>
+<li><strong>路径 (Path)</strong>：点击文件夹图标，选择 <code>res://assets/materials</code>（如果没有就新建一个）。</li>
+<li>点击底部的 <strong>重新导入 (Reimport)</strong>。</li>
+</ul>
+<hr>
+<h3 id="第二步制作网格库-meshlibrary">第二步：制作网格库 (MeshLibrary)</h3>
+<p>GridMap 需要一个“调色板”，我们通过制作网格库来实现。网格库是一个资源文件，包含了所有地牢模块的网格数据。</p>
+<ol>
+<li><strong>创建源场景</strong>：新建一个 3D 场景，根节点选择“Node3D”, 命名为 <code>library_source.tscn</code>。</li>
+<li><strong>排列素材</strong>：</li>
+</ol>
+<ul>
+<li>将处理好的地板、墙壁、门框、装饰物拖入场景。像摆货架一样把它们整齐排列，方便查看。</li>
+<li><strong>关于命名</strong>：KayKit 的命名（如 <code>wall_corner.gltf</code>）已经非常清晰，我们可以直接使用。但如果你用的是杂乱的素材，建议重命名为 <code>wall_xxx</code>, <code>floor_xxx</code> 格式。</li>
+</ul>
+<p><img alt="网格库排列" loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1392" src="/laoli-academy/_astro/1-2%E7%BD%91%E6%A0%BC%E5%BA%93%E6%8E%92%E5%88%97.C-n0mJgF_Z1E3BNr.png" ></p>
+<ol start="3">
+<li><strong>导出网格库</strong>：
+<ul>
+<li>点击顶部菜单 <strong>场景 (Scene)</strong> -> <strong>导出为… (Export As…)</strong> -> <strong>网格库… (MeshLibrary…)</strong>。</li>
+<li>保存路径：<code>res://assets/grid_library/dungeon_tileset.tres</code>。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="第三步gridmap-核心配置--分层与对齐">第三步：GridMap 核心配置 —— 分层与对齐</h3>
+<p>这是本节课技术含量最高的地方，请仔细操作。</p>
+<ol>
+<li>新建主场景 <code>Main.tscn</code> (Node3D)。</li>
+<li><strong>GridMap 分层架构</strong>：
+<ul>
+<li>我们不把所有东西塞在一个节点里。创建两个 <code>GridMap</code> 节点，分别命名为：
+<ul>
+<li><code>GridMap_Floor</code> (负责地面)</li>
+<li><code>GridMap_Walls</code> (负责墙体和高出地面的物体)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>这样做的好处是，你可以随时隐藏墙壁层来观察内部，或者只重新绘制地板而不影响墙壁。</p>
+<ol start="3">
+<li><strong>加载资源</strong>：将两个节点的 <code>Mesh Library</code> 都设置为 <code>dungeon_tileset.tres</code>。</li>
+<li><strong>设置网格尺寸 (Cell Size)</strong>：我们选择的素材是 4x4 大小的，所以将 <strong>Cell -> Size</strong> 设置为：<strong>X: 4, Y: 2, Z: 4</strong>。Y设为2是为了获得更细腻的高度控制。</li>
+<li><strong>解决对齐问题 (Center 设置)</strong>：GridMap 默认会将模型放置在格子的正中心。但有些模型的原点设计在边缘，这会导致拼图时出现缝隙或错位。所以需要取消勾选 <strong>Center X</strong>、<strong>Center Y</strong>、<strong>Center Z</strong>。</li>
+</ol>
+<p><img alt="解决对齐问题" loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1392" src="/laoli-academy/_astro/1-3%E8%A7%A3%E5%86%B3%E5%AF%B9%E9%BD%90%E9%97%AE%E9%A2%98.CDkdYhSK_Z1nVYVR.png" ></p>
+<hr>
+<h3 id="第四步绘制关卡--三房结构">第四步：绘制关卡 —— 三房结构</h3>
+<p>为了实现“摄像机平滑移动”的无缝体验，我们需要把所有房间都放在同一个世界里，但为了管理方便，我们不能把它们画在同一个 GridMap 节点上，而是应该把每个房间做成独立的场景，然后组装起来。</p>
+<p><strong>1. 创建房间模板 (room_template.tscn)</strong></p>
+<ul>
+<li>新建一个场景 <code>room_template.tscn</code>。根节点为 <code>Node3D</code>。</li>
+<li>在下面添加我们配置好的 <code>GridMap_Floor</code> 和 <code>GridMap_Walls</code>（记得加载网格库并配置好 Cell Size 为 4,2,4）。</li>
+<li>标准房间尺寸：为了获得紧凑的战斗体验，建议绘制 7 x 5 个网格单位 (即 28m x 20m)。</li>
+</ul>
+<p>这就是我们的“毛坯房”，以后所有的房间都基于这个模板装修。</p>
+<p><strong>2. 制作三个独立房间</strong></p>
+<ul>
+<li>复制 <code>room_template.tscn</code> 场景，命名为 <code>room_lobby.tscn</code>。留出 北面 (上) 的出口缺口。</li>
+<li>复制 <code>room_template.tscn</code> 场景，命名为 <code>room_dungeon.tscn</code>。留出 南面 (下) 的入口缺口。在房间内部画一些柱子或迷宫墙。</li>
+<li>复制 <code>room_template.tscn</code> 场景，命名为 <code>room_boss.tscn</code>。同样大小，留出入口。地板可以换一种花纹（如果有的话）。</li>
+</ul>
+<p><strong>3. 组装世界 (World Assembly)</strong></p>
+<ul>
+<li>将这三个房间场景（.tscn）实例化到主场景中。</li>
+<li>排列位置：<code>room_lobby</code> 放在原点 (0, 0, 0)。<code>room_dungeon</code> 放在北边远处，例如 (0, 0, -25)。(注意Godot中 -Z 是前方)<code>room_boss</code> 放在更远的地方，例如 (0, 0, -50)。</li>
+</ul>
+<p>一定要留出足够的空隙，也就是“黑暗虚空”，这样摄像机在当前房间时，才不会拍到隔壁房间的边缘。</p>
+<p><img alt="组装世界" loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1392" src="/laoli-academy/_astro/1-4%E7%BB%84%E8%A3%85%E4%B8%96%E7%95%8C.DuAgDAvU_Z2qxti4.png" ></p>
+<hr>
+<h3 id="第五步透视摄像机--上帝视角">第五步：透视摄像机 —— 上帝视角</h3>
+<p>我们要实现类似现代 Top-Down 射击游戏或《挺进地牢》的视觉效果。</p>
+<ol>
+<li>添加 <code>Camera3D</code> 节点。</li>
+<li><strong>投影模式</strong>：保持默认的 <strong>Perspective (透视)</strong>。透视投影能带来近大远小的纵深感，让墙壁的高度更明显。</li>
+<li><strong>关键参数设置</strong>：<strong>Position (位置)</strong>：<strong>(14, 18, 15)</strong>。这个坐标能让摄像机正好对准一个标准房间（11x7网格）的中心位置。<strong>Rotation (旋转)</strong>：<strong>X: -80</strong> 度。接近垂直俯视，但保留了 10 度的倾角，能让我们看到墙壁的立面，而不是只看到墙顶。</li>
+</ol>
+<p><img alt="透视摄像机" loading="lazy" decoding="async" fetchpriority="auto" width="2307" height="1298" src="/laoli-academy/_astro/1-5%E6%B8%B8%E6%88%8F%E8%BF%90%E8%A1%8C%E6%88%AA%E5%9B%BE.B3N64LHd_17h1vE.png" ></p>
+<hr>
+<h3 id="第六步环境与灯光--氛围营造">第六步：环境与灯光 —— 氛围营造</h3>
+<p>最后，我们来为地牢打光。在这个环节，我们将抛弃平庸的全屏照亮，利用 SpotLight3D (聚光灯) 打造出一种类似“舞台追光”的高级质感。</p>
+<p><strong>1. 纯黑背景</strong></p>
+<p>首先，我们要切断外界的一切干扰。</p>
+<ul>
+<li>在场景中添加 WorldEnvironment 节点。</li>
+<li>新建 Environment 资源。</li>
+<li>Background Mode：选择 Custom Color (自定义颜色)。</li>
+<li>Color：设置为 纯黑 (#000000)。</li>
+<li>Ambient Light (环境光)：确保 Source 为 <code>Background</code>，或者能量设为 0。</li>
+</ul>
+<p>现在，你的场景是一片死寂的黑暗，等待我们去点亮。现在，我们的三个房间（大厅、地牢、BOSS房）像孤岛一样悬浮在虚空中。我们要用光影给它们赋予不同的“情绪”。我们将采用 “房间独立照明” 的策略，而不是使用全局大灯。</p>
+<p><strong>2. 点亮大厅 —— 温暖的避风港 (Room_Lobby)</strong></p>
+<p>打开 <code>room_lobby.tscn</code> 场景。</p>
+<ul>
+<li>添加一个 <code>SpotLight3D</code> 节点。</li>
+<li>位置 (Transform)：放在房间中心的正上方，建议高度 Y: 10 (因为房间小了，灯不用太高)。</li>
+<li>Rotation：X: -90 度 (垂直向下)。</li>
+<li>光照参数 (Light)：Color：暖橙色 (#FF9E45)。Energy：8 ~ 10 (根据高度调整)。Shadow：勾选 Enabled (这是立体感的关键)。</li>
+<li>聚光参数 (Spot)：Range：20 (确保能照到地面)。Angle：60度 (调整角度，让光圈边缘刚好切在墙壁内侧，形成暗角)。</li>
+</ul>
+<p>效果：大厅看起来像一个温暖的火炉旁，给人安全感。</p>
+<p><strong>3. 点亮地牢 —— 阴冷的埋骨地 (Room_Dungeon)</strong></p>
+<p>打开 <code>room_dungeon.tscn</code> 场景。</p>
+<ul>
+<li>添加一个 <code>SpotLight3D</code> 节点。</li>
+<li>位置 (Transform) ：Y: 10。同样居中，垂直向下。</li>
+<li>光照参数 (Light)：Color：幽灵青 (#45FFCC) 或 冷蓝色 (#4590FF)。Energy：6 ~ 8 (比大厅暗一点，营造压抑感)。Shadow：勾选 Enabled。</li>
+</ul>
+<p>效果：地牢看起来阴森恐怖，寒气逼人。</p>
+<p><strong>4. 点亮BOSS房 —— 猩红的决斗场 (Room_Boss)</strong></p>
+<p>打开 <code>room_boss.tscn</code> 场景。</p>
+<ul>
+<li>添加一个 <code>SpotLight3D</code> 节点。</li>
+<li>位置 (Transform)：Y: 10。同样居中，垂直向下。</li>
+<li>光照参数 (Light)：Color：深红色 (#FF4545) 或 紫色。Energy：12 (更亮，更戏剧化)。Shadow：勾选 Enabled。</li>
+</ul>
+<p>效果：充满危险和张力，预示着大战在即。</p>
+<p><strong>5. 组合预览</strong></p>
+<p>回到 <code>Main.tscn</code> 场景。 你会看到黑暗的虚空中，悬浮着三个颜色各异的“岛屿”。左边是暖橙色的大厅。远处是青蓝色的地牢。更远处是猩红色的BOSS房。</p>
+<p><img alt="灯光对比图" loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1392" src="/laoli-academy/_astro/1-6%E7%81%AF%E5%85%89%E5%AF%B9%E6%AF%94%E5%9B%BE.C0fcsRa6_ZC2HqS.png" ></p>
+<hr>
+<h3 id="本课小结">本课小结</h3>
+<p>恭喜！通过这一课，你已经掌握了 GridMap 最核心的“避坑指南”和配置技巧。我们搭建了一个结构清晰、视觉专业的 3D 地牢舞台。</p>
+<p><strong>下节课预告：</strong>
+现在的地牢空无一人。下一节课，我们将导入<strong>英雄角色</strong>，实现 WASD 移动控制，并编写基础的<strong>交互系统</strong>——让这寂静的地下城热闹起来！</p>
+<p><strong>这里是老李游戏学院，我们下节课见！</strong></p>
+<hr>
+<p><a href="../">系列目录</a> · <a href="../2/">下一课 →</a></p> </article> </div> </main> <footer class="shell bar"> <a href="https://space.bilibili.com/8618918">B站</a> <a href="https://github.com/LiGameAcademy">GitHub</a> <a href="https://godot-li.itch.io/">itch.io</a> <a href="https://wx.zsxq.com/group/28885154818841">知识星球</a> </footer> <script type="module">document.querySelector("#theme")?.addEventListener("click",()=>{const e=document.documentElement,t=e.dataset.theme==="dark"?"light":"dark";e.dataset.theme=t;try{localStorage.setItem("laoli-theme",t)}catch{}});</script> </body> </html>

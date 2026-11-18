@@ -1,0 +1,281 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>第02课：英雄的步伐 —— 角色控制、随身光环与交互基础 · 老李游戏学院</title><script>
+      try { document.documentElement.dataset.theme = localStorage.getItem("laoli-theme") || "light"; } catch {}
+    </script><style>:root{color-scheme:light;--bg: #faf9f6;--fg: #171c24;--border: #d9d9d3;--panel: #fff;--accent: #245784}:root[data-theme=dark]{color-scheme:dark;--bg: #10151c;--fg: #f1f2f4;--border: #37424e;--panel: #1a222c;--accent: #9acafa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,sans-serif}a{color:var(--accent)}button{font:inherit;cursor:pointer}.shell{width:min(1100px,calc(100% - 32px));margin-inline:auto}.bar,.bar nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap}header.bar{justify-content:space-between;padding-block:20px}footer.bar{margin-block-start:64px;padding-block:20px;border-top:1px solid var(--border)}.brand{font-weight:750;color:inherit;text-decoration:none}.hero{display:grid;isolation:isolate;position:relative;align-items:end;min-height:clamp(310px,48vw,500px);overflow:hidden;border-radius:16px;color:#fff;background:#172630}.hero img,.hero:after{position:absolute;inset:0;width:100%;height:100%}.hero img{object-fit:cover;z-index:-2}.hero:after{content:"";background:linear-gradient(transparent,#080e14eb);z-index:-1}.hero>div{padding:clamp(20px,5vw,52px)}.hero h1{font-size:clamp(1.8rem,5vw,3rem);margin:0}.button{display:inline-block;background:#fff;color:#163550;border-radius:6px;padding:8px 14px;text-decoration:none}.home-series{margin-top:36px}.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}.catalog-header{display:flex;align-items:center;justify-content:space-between;gap:12px}#course-views button{border:1px solid var(--border);background:var(--panel);color:var(--fg);padding:4px 10px;border-radius:6px}#course-views button[aria-pressed=true]{background:var(--accent);color:var(--bg)}.course-card{flex-direction:column;justify-content:start;padding:0;gap:0;overflow:hidden;text-decoration:none}.course-card img{width:100%;height:auto;aspect-ratio:16 / 9;object-fit:cover}.course-copy{display:grid;gap:4px;padding:14px 18px}.course-grid[data-view=list]{grid-template-columns:minmax(0,1fr)}.course-grid[data-view=list] .course-card{flex-direction:row;align-items:center}.course-grid[data-view=list] img{width:clamp(96px,26%,208px);flex-shrink:0}.course-card:hover strong{text-decoration:underline}.course-card span{color:var(--fg)}.action-links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-block:16px}.project-preview{display:block;max-width:100%;height:auto;border-radius:12px}.panel{display:flex;gap:12px;justify-content:space-between;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px}.series li{padding-block:5px}.reading{display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;align-items:start}aside{padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px}aside ol,aside ul{padding-left:22px}aside [aria-current]{font-weight:750;color:var(--fg)}article{min-width:0;max-width:76ch;overflow-wrap:anywhere}article h1{line-height:1.25;margin-top:0}article img{max-width:100%;height:auto;border-radius:6px}article pre{overflow:auto;padding:16px;border-radius:8px}@media(max-width:720px){.reading{grid-template-columns:minmax(0,1fr);gap:20px}}
+</style></head> <body> <header class="shell bar"> <a class="brand" href="/laoli-academy/">老李游戏学院</a> <nav aria-label="主导航"> <a href="/laoli-academy/catalog/">课程</a> <a href="/laoli-academy/#showcase">作品与源码</a> <a href="/laoli-academy/en/" lang="en" hreflang="en">English</a> <button id="theme" type="button">切换主题</button> </nav> </header> <main class="shell"> <p><a href="../">← 2 小时上手 Godot</a></p> <div class="reading"> <aside> <nav aria-label="系列章节"> <strong>系列章节</strong> <ol> <li><a href="../1/">第01课：梦开始的地方 —— GridMap 高级配置与关卡搭建</a></li><li><a href="../2/" aria-current="page">第02课：英雄的步伐 —— 角色控制、随身光环与交互基础</a></li><li><a href="../3/">第03课：视界巡航 —— 镜头平滑过渡与交互传送</a></li><li><a href="../4/">第04课：杀戮的代价 —— 战斗判定、物理掉落与逻辑闭环</a></li><li><a href="../5/">【番外篇】神兵天降 —— 接入“老李通用背包插件”</a></li> </ol> </nav> <details> <summary>本课目录</summary> <ul><li><a href="#本课目标">本课目标：</a></li><li><a href="#第一步资产准备与动画提取">第一步：资产准备与动画提取</a></li><li><a href="#第二步组装英雄">第二步：组装英雄</a></li><li><a href="#第三步构建动画大脑-animationtree">第三步：构建动画大脑 (AnimationTree)</a></li><li><a href="#第一步主角的诞生-scene-setup">第一步：主角的诞生 (Scene Setup)</a></li><li><a href="#第二步随身光环--照亮黑暗-the-lantern">第二步：随身光环 —— 照亮黑暗 (The Lantern)</a></li><li><a href="#第三步输入映射-input-map">第三步：输入映射 (Input Map)</a></li><li><a href="#第四步注入灵魂--移动脚本">第四步：注入灵魂 —— 移动脚本</a></li><li><a href="#第五步交互系统的雏形-interaction">第五步：交互系统的雏形 (Interaction)</a></li><li><a href="#第六步实战测试">第六步：实战测试</a></li></ul> </details> </aside> <article> <h1>第02课：英雄的步伐 —— 角色控制、随身光环与交互基础</h1> <p>大家好，我是<strong>玩物不丧志的老李</strong>。</p>
+<p>在上一节课，我们搭建了一个光影氛围极佳的地下城舞台。但现在，这个舞台是空的。
+今天这节课，我们将邀请主角登场。</p>
+<p>我们要实现的不只是简单的“能动就行”，而是要打造一种<strong>商业级的手感</strong>：</p>
+<ol>
+<li><strong>丝滑的加减速移动</strong>（告别生硬的起步停车）。</li>
+<li><strong>平滑的转身动画</strong>（告别瞬间掉头）。</li>
+<li><strong>自带随身光环</strong>（探索黑暗虚空的必备神器）。</li>
+<li><strong>通用交互系统</strong>（为后续的任务和对话打下地基）。</li>
+</ol>
+<h2 id="本课目标"><strong>本课目标：</strong></h2>
+<ol>
+<li>制作 <code>Player</code> 场景与物理配置。</li>
+<li>编写俯视角 3D 移动与动画脚本。</li>
+<li>实现“随身光源”方案。</li>
+<li>搭建基于 Area3D 的交互检测系统。</li>
+</ol>
+<h2 id="第一步资产准备与动画提取">第一步：资产准备与动画提取</h2>
+<p>做 3D 游戏，第一步不是写代码，而是处理素材。KayKit 提供了非常棒的分离式素材，我们需要把模型和动画“组装”在一起。</p>
+<h3 id="1-下载素材"><strong>1. 下载素材</strong></h3>
+<p>请访问以下链接下载资源（这也是对作者的支持）：</p>
+<ul>
+<li><strong>模型与武器</strong>：<a href="https://kaylousberg.itch.io/kaykit-adventurers">KayKit Adventurers</a> -> 下载 <code>KayKit_Adventurers_1.0_FREE.zip</code></li>
+<li><strong>角色动画</strong>：<a href="https://kaylousberg.itch.io/kaykit-character-animations">KayKit Character Animations</a> -> 下载 <code>KayKit_Animations_1.0_FREE.zip</code></li>
+</ul>
+<p>解压后，将 <code>Barbarian.gltf</code>（在 Characters 文件夹）、<code>axe_1handed.gltf</code>（在 Assets 文件夹，包含bin文件）</p>
+<p>动画导入<code>Rig_Medium_Combat_Melee.gltf</code>、<code>Rig_Medium_General.gltf</code>、<code>Rig_Medium_MovementBasic.gltf</code>。</p>
+<h3 id="2-提取动画资源">2. 提取动画资源</h3>
+<p>Godot 4 允许我们把动画从 GLTF 文件中独立提取出来，保存为 <code>.res</code> 文件，这样可以复用给任何同骨骼的角色。</p>
+<ul>
+<li><strong>双击</strong> <code>Animations.gltf</code> 打开高级导入设置。</li>
+<li>在左侧列表中，选中 <strong>AnimationPlayer</strong> 节点。</li>
+<li>在右侧面板，你会看到长长的动画列表。</li>
+<li>在高级导入设置面板的左上角动作按钮，选择“设置动画保存路径”，选择<code>res://assets/animations/</code>。</li>
+<li>此时会弹出“设置路径以重新导入时将动画另存为资源文件”面板，勾选后续会用到的动画（或者全部提取）。点击“设置路径”按钮，完成设置。</li>
+<li>点击“重新导入”按钮，完成动画提取。</li>
+</ul>
+<p><img  loading="lazy" decoding="async" fetchpriority="auto" width="2050" height="1184" src="/laoli-academy/_astro/2-2%E6%8F%90%E5%8F%96%E8%A7%92%E8%89%B2%E5%8A%A8%E7%94%BB.DKii1s6W_Z1m2SeM.png" ></p>
+<h2 id="第二步组装英雄">第二步：组装英雄</h2>
+<p>现在我们来把野蛮人、斧头和动画组装成一个完整的 <code>Player</code>。</p>
+<h3 id="1-创建继承场景"><strong>1. 创建继承场景</strong></h3>
+<p><img  loading="lazy" decoding="async" fetchpriority="auto" width="2050" height="1184" src="/laoli-academy/_astro/2-1%E5%AF%BC%E5%85%A5%E8%8B%B1%E9%9B%84%E6%A8%A1%E5%9E%8B.xntsOQ9v_22r21P.png" ></p>
+<ul>
+<li>在文件系统中右键点击 <code>Barbarian.gltf</code> -> <strong>新建继承场景 (New Inherited Scene)</strong>。</li>
+<li>将根节点重命名为 <code>PlayerVisuals</code>（或者直接把这个场景保存为 <code>Barbarian_Skin.tscn</code>，然后在 Player CharacterBody3D 下实例化它。为了教程简便，我们直接在这个继承场景上操作，稍后作为子节点加给 Player）。</li>
+<li>建议：我们这里直接把这个继承场景保存为 <code>res://assets/scenes/characters/Barbarian_Skin.tscn</code>。</li>
+</ul>
+<h3 id="2-武器挂载-boneattachment3d"><strong>2. 武器挂载 (BoneAttachment3D)</strong></h3>
+<p>我们要把斧头拿在野蛮人手里，这就需要“骨骼挂点”。</p>
+<ul>
+<li>在场景树中，选中 <code>Skeleton3D</code> 节点。</li>
+<li>右键 -> <strong>添加子节点</strong> -> 搜索 <strong>BoneAttachment3D</strong>。</li>
+<li>选中新加的 <code>BoneAttachment3D</code>，在右侧属性面板中：
+<ul>
+<li><strong>Bone Name</strong>: 下拉选择 <strong>handslot.r</strong> (右手骨骼)。</li>
+<li>注意：此时视窗中该节点会自动吸附到右手位置。</li>
+</ul>
+</li>
+<li><strong>添加武器</strong>：
+<ul>
+<li>将 <code>axe_1handed.gltf</code> 拖入，作为 <code>BoneAttachment3D</code> 的<strong>子节点</strong>。</li>
+</ul>
+</li>
+<li><strong>调整位置</strong>：
+<ul>
+<li>斧头刚进去时位置可能不对（比如插在手心里）。</li>
+<li>选中 <code>axe_1handed.gltf</code> 节点，调整 <code>Transform</code> 的 Position 和 Rotation，直到斧柄完美地握在手里，且斧刃朝前。</li>
+</ul>
+</li>
+</ul>
+<p><img  loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1392" src="/laoli-academy/_astro/2-3%E6%AD%A6%E5%99%A8%E6%8C%82%E7%82%B9%E5%B1%95%E7%A4%BA.Bzq5Dejz_ZooKdi.png" ></p>
+<p><strong>3. 配置 AnimationPlayer</strong></p>
+<ul>
+<li>新增 <code>AnimationPlayer</code>。</li>
+<li>在底部的动画编辑器中，点击 <strong>动画 (Animation)</strong> -> <strong>管理动画库 (Manage Animations)</strong>。</li>
+<li>点击 <strong>创建库 (Create Library)</strong>，命名为<code>hero_animations</code>。</li>
+<li>我们这里添加所有动画资源文件到这个库，方便后续复用。</li>
+<li>对于idle、walk、run动画，设置为循环播放。</li>
+<li><strong>预览</strong>：点击播放键，确保野蛮人能正确做动作，且斧头一直紧紧跟随着右手运动。</li>
+</ul>
+<h2 id="第三步构建动画大脑-animationtree">第三步：构建动画大脑 (AnimationTree)</h2>
+<p>光有动画还不够，我们需要一个逻辑大脑来平滑切换它们。</p>
+<h3 id="1-添加-animationtree"><strong>1. 添加 AnimationTree</strong></h3>
+<ul>
+<li>在场景根节点下添加 <strong>AnimationTree</strong> 节点。</li>
+<li><strong>Tree Root</strong>: 选择 <strong>AnimationNodeBlendTree</strong> (动画混合树)。</li>
+<li><strong>Anim Player</strong>: 指定为刚才配置好的 <code>AnimationPlayer</code>。</li>
+<li><strong>Active</strong>: 勾选启用。</li>
+</ul>
+<h3 id="2-编辑混合树-blend-tree"><strong>2. 编辑混合树 (Blend Tree)</strong></h3>
+<ul>
+<li>双击 <code>AnimationTree</code> 打开编辑器底部的图表界面。</li>
+<li><strong>添加状态机</strong>：右键空白处 -> <strong>添加节点 (Add Node)</strong> -> <strong>StateMachine</strong>。将它连接到 <code>Output</code>。</li>
+<li>现在我们的逻辑全部在这个 StateMachine 节点内部处理。</li>
+</ul>
+<h3 id="3-配置状态机-state-machine"><strong>3. 配置状态机 (State Machine)</strong></h3>
+<ul>
+<li>点击图表中的 <code>StateMachine</code> 节点旁边的小铅笔图标（或双击它），进入状态机内部。</li>
+<li><strong>创建移动状态 (Movement)</strong>：
+<ul>
+<li>右键 -> <strong>添加节点 (Add Node)</strong> -> <strong>BlendSpace1D</strong>。</li>
+<li>重命名为 <code>Movement</code>。</li>
+<li>点击小铅笔图标进入 <code>Movement</code> 内部：
+<ul>
+<li>将水平轴的范围设为 0 到 5 (0=静止, 1=跑动)。</li>
+<li>在 0 的位置添加点 -> <strong>添加点 (Add Point)</strong> -> 选择 <code>Idle</code> 动画。</li>
+<li>在 2 的位置添加点 -> <strong>添加点 (Add Point)</strong> -> 选择 <code>Walk</code> 动画。</li>
+<li>在 5 的位置添加点 -> <strong>添加点 (Add Point)</strong> -> 选择 <code>Run</code> 动画。</li>
+<li>效果：通过改变一个数值，就能实现从站立到奔跑的平滑过渡。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-设置切换逻辑-transitions"><strong>4. 设置切换逻辑 (Transitions)</strong></h3>
+<ul>
+<li>选中 <code>Movement -> Attack</code> 的连线：
+<ul>
+<li><strong>Advance -> Mode</strong>: <strong>Enabled</strong> (允许代码触发) 。通常我们用代码控制 <code>travel("Attack")</code>。</li>
+<li><strong>Switch Mode</strong>: <strong>Immediate</strong> (立即切换)。</li>
+</ul>
+</li>
+<li>选中 <code>Attack -> Movement</code> 的连线 (自动回位)：
+<ul>
+<li><strong>Switch Mode</strong>: <strong>At End</strong> (等待动画播放完毕)。</li>
+<li><strong>Advance -> Mode</strong>: <strong>Auto</strong> (自动触发)。</li>
+<li>这意味着攻击动画一播完，就会自动切回移动状态，无需写代码。</li>
+</ul>
+</li>
+</ul>
+<p><img alt="AnimationTree 的最终连线图" loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1392" src="/laoli-academy/_astro/2-4AnimationTree%E5%8A%A8%E7%94%BB%E7%8A%B6%E6%80%81%E6%9C%BA.Bv8_E23r_ZcINmt.png" ></p>
+<h2 id="第一步主角的诞生-scene-setup">第一步：主角的诞生 (Scene Setup)</h2>
+<ol>
+<li><strong>新建场景</strong>：创建一个新场景，根节点选择 <strong>CharacterBody3D</strong>，重命名为 <code>Player</code>。</li>
+<li><strong>层级管理 (最佳实践)</strong>：在 <code>Player</code> 下添加一个 <code>Node3D</code>，命名为 <strong>Visuals</strong>。我们将把模型放在这里面。
+为什么要多这一层？因为我们希望逻辑（碰撞体）不旋转，而模型（Visuals）随着移动方向旋转。这样物理判定最稳定。</li>
+<li><strong>导入模型</strong>：将 <code>Barbarian_Skin.tscn</code> 拖入 <code>Visuals</code> 节点下。</li>
+<li><strong>添加碰撞</strong>：在 <code>Player</code> 根节点下添加 <code>CollisionShape3D</code>。形状选择 <strong>CapsuleShape3D (胶囊体)</strong>。调整位置：胶囊体默认在原点中心。将其 <strong>Position Y</strong> 上调 <strong>1.0</strong>（假设胶囊高2米），确保它的底部刚好对齐脚下的 Y=0 平面。</li>
+<li><strong>设置层级 (Layers)</strong>：选中 <code>Player</code> 根节点。<strong>Collision -> Layer</strong>：设为 <strong>2</strong> (我们定义为 Player层)。<strong>Collision -> Mask</strong>：设为 <strong>1</strong> (Environment层)。这样主角就能稳稳地站在我们上一课画的地板上了。</li>
+</ol>
+<p><img alt="Player 场景树结构图，以及碰撞体胶囊包裹住模型的侧视图" loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1392" src="/laoli-academy/_astro/2-5Player%E5%9C%BA%E6%99%AF%E6%A0%91%E7%BB%93%E6%9E%84.DnHTNAIN_Z12reUy.png" ></p>
+<h2 id="第二步随身光环--照亮黑暗-the-lantern">第二步：随身光环 —— 照亮黑暗 (The Lantern)</h2>
+<p>还记得我们把环境光关掉造成了“虚空”效果吗？如果在房间之间的走廊没有灯，主角就会隐身。我们需要给主角挂一个灯笼。</p>
+<ol>
+<li>在 <code>Player</code> 根节点下，添加一个 <strong>OmniLight3D (全向光)</strong>。</li>
+<li><strong>调整位置</strong>：放在头顶上方一点，例如 <strong>(0, 2.5, 0)</strong>。</li>
+<li><strong>参数设置</strong>：
+<ul>
+<li><strong>Color</strong>：<strong>纯白</strong> 或 <strong>微黄 (#FFFDD0)</strong>。</li>
+<li><strong>Range (范围)</strong>：<strong>4.0</strong>。不要太大，只要能照亮身边的路即可。</li>
+<li><strong>Energy (能量)</strong>：<strong>0.8</strong>。作为补光，不要抢了房间主灯的风头。</li>
+<li><strong>Shadow (阴影)</strong>：<strong>取消勾选 (Disabled)</strong>。
+为什么不开阴影？一是为了性能；二是因为主角脚底下的动态阴影在俯视角下有时会显得很乱，不开反而更干净。</li>
+</ul>
+</li>
+</ol>
+<h2 id="第三步输入映射-input-map">第三步：输入映射 (Input Map)</h2>
+<p>在写代码前，告诉 Godot 哪个键是“上”、“下”、“左”、“右”、“交互”和“攻击”。</p>
+<ol>
+<li>点击顶部菜单 <strong>项目</strong> -> <strong>项目设置</strong> -> <strong>输入映射</strong>。</li>
+<li>添加以下动作并绑定按键：
+<ul>
+<li><code>move_up</code>: <strong>W</strong></li>
+<li><code>move_down</code>: <strong>S</strong></li>
+<li><code>move_left</code>: <strong>A</strong></li>
+<li><code>move_right</code>: <strong>D</strong></li>
+<li><code>interact</code>: <strong>E</strong> (交互键)</li>
+<li><code>attack</code>: <strong>J</strong> 或 <strong>鼠标左键</strong> (为第四课做准备)</li>
+</ul>
+</li>
+</ol>
+<h2 id="第四步注入灵魂--移动脚本">第四步：注入灵魂 —— 移动脚本</h2>
+<p>为 <code>Player</code> 根节点添加脚本 <code>player.gd</code>。
+我们要实现的是带有<strong>惯性</strong>的移动，这比直接赋值速度要舒服得多。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> CharacterBody3D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@export_group</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Movement"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> speed: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 5.0</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> acceleration: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 20.0</span><span style="color:#6A737D"> # 加速度：决定起步快慢</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> rotation_speed: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 12.0</span><span style="color:#6A737D"> # 转身速度</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> visuals: </span><span style="color:#B392F0">Node3D</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">Visuals</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> animation_tree: </span><span style="color:#B392F0">AnimationTree</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">Visuals/Barbarian/AnimationTree</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> animation_state_machine: </span><span style="color:#B392F0">AnimationNodeStateMachinePlayback</span></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> gravity </span><span style="color:#F97583">=</span><span style="color:#B392F0"> ProjectSettings</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">get_setting</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"physics/3d/default_gravity"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _ready</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	animation_state_machine </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> animation_tree.</span><span style="color:#B392F0">get</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"parameters/StateMachine/playback"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">	animation_state_machine.</span><span style="color:#B392F0">travel</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"movement"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _physics_process</span><span style="color:#E1E4E8">(delta: </span><span style="color:#B392F0">float</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#F97583"> not</span><span style="color:#B392F0"> is_on_floor</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#E1E4E8">        velocity.y </span><span style="color:#F97583">-=</span><span style="color:#E1E4E8"> gravity </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> delta</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">	# 1. 获取输入 (2D向量)</span></span>
+<span class="line"><span style="color:#F97583">	var</span><span style="color:#E1E4E8"> input_dir </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Input</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">get_vector</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"move_left"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"move_right"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"move_up"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"move_down"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">	# 2. 转换为 3D 方向 (X/Z 平面)</span></span>
+<span class="line"><span style="color:#F97583">	var</span><span style="color:#E1E4E8"> direction </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Vector3</span><span style="color:#E1E4E8">(input_dir.x, </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, input_dir.y).</span><span style="color:#B392F0">normalized</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> direction:</span></span>
+<span class="line"><span style="color:#6A737D">		# 3. 移动逻辑：利用 move_toward 实现平滑加速</span></span>
+<span class="line"><span style="color:#E1E4E8">		velocity.x </span><span style="color:#F97583">=</span><span style="color:#B392F0"> move_toward</span><span style="color:#E1E4E8">(velocity.x, direction.x </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> speed, acceleration </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> delta)</span></span>
+<span class="line"><span style="color:#E1E4E8">		velocity.z </span><span style="color:#F97583">=</span><span style="color:#B392F0"> move_toward</span><span style="color:#E1E4E8">(velocity.z, direction.z </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> speed, acceleration </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> delta)</span></span>
+<span class="line"><span style="color:#E1E4E8">		</span></span>
+<span class="line"><span style="color:#6A737D">		# 4. 旋转逻辑：让 Visuals 平滑转向移动方向</span></span>
+<span class="line"><span style="color:#F97583">		var</span><span style="color:#E1E4E8"> target_angle </span><span style="color:#F97583">=</span><span style="color:#B392F0"> atan2</span><span style="color:#E1E4E8">(input_dir.x, input_dir.y)</span></span>
+<span class="line"><span style="color:#E1E4E8">		visuals.rotation.y </span><span style="color:#F97583">=</span><span style="color:#B392F0"> lerp_angle</span><span style="color:#E1E4E8">(visuals.rotation.y, target_angle, rotation_speed </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> delta)</span></span>
+<span class="line"><span style="color:#F97583">	else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#6A737D">		# 停止逻辑：利用 move_toward 实现平滑减速 (惯性停车)</span></span>
+<span class="line"><span style="color:#E1E4E8">		velocity.x </span><span style="color:#F97583">=</span><span style="color:#B392F0"> move_toward</span><span style="color:#E1E4E8">(velocity.x, </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, acceleration </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> delta)</span></span>
+<span class="line"><span style="color:#E1E4E8">		velocity.z </span><span style="color:#F97583">=</span><span style="color:#B392F0"> move_toward</span><span style="color:#E1E4E8">(velocity.z, </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, acceleration </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> delta)</span></span>
+<span class="line"><span style="color:#E1E4E8">		</span></span>
+<span class="line"><span style="color:#B392F0">	_set_movement_blend_position</span><span style="color:#E1E4E8">(velocity.</span><span style="color:#B392F0">length</span><span style="color:#E1E4E8">())</span></span>
+<span class="line"><span style="color:#6A737D">	# 6. 应用移动</span></span>
+<span class="line"><span style="color:#B392F0">	move_and_slide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _play_anim</span><span style="color:#E1E4E8">(anim_name: </span><span style="color:#B392F0">String</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#F97583"> not</span><span style="color:#B392F0"> is_instance_valid</span><span style="color:#E1E4E8">(animation_state_machine):</span></span>
+<span class="line"><span style="color:#E1E4E8">		animation_state_machine </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> animation_tree.</span><span style="color:#B392F0">get</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"parameters/StateMachine/playback"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#F97583"> not</span><span style="color:#B392F0"> is_instance_valid</span><span style="color:#E1E4E8">(animation_state_machine): </span><span style="color:#F97583">return</span></span>
+<span class="line"><span style="color:#E1E4E8">	animation_state_machine.</span><span style="color:#B392F0">travel</span><span style="color:#E1E4E8">(anim_name)</span></span>
+<span class="line"><span style="color:#E1E4E8">	</span></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _set_movement_blend_position</span><span style="color:#E1E4E8">(blend_position: </span><span style="color:#B392F0">float</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	animation_tree.</span><span style="color:#B392F0">set</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"parameters/StateMachine/movement/blend_position"</span><span style="color:#E1E4E8">, blend_position)</span></span></code></pre>
+<h2 id="第五步交互系统的雏形-interaction">第五步：交互系统的雏形 (Interaction)</h2>
+<p>在 RPG 里，走到 NPC 面前按 E 说话是标配。我们在免费课里实现基础，在付费课里接入复杂的对话系统。</p>
+<p><strong>1. 制作探测器 (InteractionArea)</strong></p>
+<ul>
+<li>在 <code>Player</code> -> <code>Visuals</code> 节点下，添加一个 <strong>Area3D</strong>，命名为 <code>InteractionArea</code>。</li>
+<li>注意：一定要放在 Visuals 下，这样它会随着主角旋转，始终检测主角正前方。</li>
+<li>添加 <code>CollisionShape3D</code> (Box)，调整大小和位置，让它覆盖角色前方 1.5米左右的区域。</li>
+<li><strong>Layer 设置</strong>：Layer 设为 None (0)，<strong>Mask</strong> 设为 <strong>8</strong> (我们预留给交互物体的层级)。</li>
+</ul>
+<p><strong>2. 完善脚本 (player.gd)</strong></p>
+<p>在 <code>player.gd</code> 中添加交互逻辑：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#6A737D"># ... 之前的代码 ...</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> interaction_area: </span><span style="color:#B392F0">Area3D</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">Visuals/InteractionArea</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _unhandled_input</span><span style="color:#E1E4E8">(event: </span><span style="color:#B392F0">InputEvent</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> event.</span><span style="color:#B392F0">is_action_pressed</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"interact"</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#B392F0">        _try_interact</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _try_interact</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#6A737D">    # 获取探测区域内所有的物体</span></span>
+<span class="line"><span style="color:#F97583">    var</span><span style="color:#E1E4E8"> bodies </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> interaction_area.</span><span style="color:#B392F0">get_overlapping_areas</span><span style="color:#E1E4E8">() </span><span style="color:#6A737D"># 假设交互物也是Area3D</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> bodies.</span><span style="color:#B392F0">size</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">></span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#6A737D">        # 找到最近的一个 (简单处理：取第一个)</span></span>
+<span class="line"><span style="color:#F97583">        var</span><span style="color:#E1E4E8"> target </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> bodies[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#6A737D">        # 检查目标是否有 interact 方法</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> target.</span><span style="color:#B392F0">has_method</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"interact"</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">            target.</span><span style="color:#B392F0">interact</span><span style="color:#E1E4E8">()</span></span></code></pre>
+<h2 id="第六步实战测试">第六步：实战测试</h2>
+<ol>
+<li>打开 <code>Main.tscn</code>。</li>
+<li>将 <code>Player.tscn</code> 拖入场景，放在大厅 (Room_Lobby) 的地板上。</li>
+<li>运行游戏 (F5)。</li>
+</ol>
+<p><strong>检查清单：</strong></p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> <strong>移动</strong>：按下 WASD，主角是否能平滑跑动？松开按键是否有惯性滑步？</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>动画</strong>：跑步和待机动画是否切换自然？</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>光照</strong>：试着把主角走到黑暗的虚空边缘，随身光源是否照亮了脚下的路？</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>碰撞</strong>：试着撞墙，确认不会穿模。</li>
+</ul>
+<p><img  loading="lazy" decoding="async" fetchpriority="auto" width="2557" height="1382" src="/laoli-academy/_astro/2-6%E4%B8%BB%E8%A7%92%E7%A7%BB%E5%8A%A8%E6%BC%94%E7%A4%BA.BJhbMuvw_Z5Tjh1.gif" ></p>
+<hr>
+<h3 id="本课小结与痛点埋设">本课小结与痛点埋设</h3>
+<p>现在，你拥有了一个手感极佳的英雄。</p>
+<p>但当你按下 <strong>E</strong> 键时，什么都不会发生，因为这个世界还是空的。</p>
+<p><strong>下节课预告：</strong>
+下一节课，我们将制作<strong>传送门</strong>和<strong>简单的 NPC</strong>。
+我们会实现“走到门口 -> 黑屏转场 -> 传送到地牢”的完整流程。同时，我们将尝试与 NPC 交互，虽然现在只能在控制台打印“Hello”，但这正是未来通向庞大剧情系统的第一步！</p>
+<p><strong>这里是老李游戏学院，我们下节课见！</strong></p>
+<hr>
+<p><a href="../1/">← 上一课</a> · <a href="../">系列目录</a> · <a href="../3/">下一课 →</a></p> </article> </div> </main> <footer class="shell bar"> <a href="https://space.bilibili.com/8618918">B站</a> <a href="https://github.com/LiGameAcademy">GitHub</a> <a href="https://godot-li.itch.io/">itch.io</a> <a href="https://wx.zsxq.com/group/28885154818841">知识星球</a> </footer> <script type="module">document.querySelector("#theme")?.addEventListener("click",()=>{const e=document.documentElement,t=e.dataset.theme==="dark"?"light":"dark";e.dataset.theme=t;try{localStorage.setItem("laoli-theme",t)}catch{}});</script> </body> </html>

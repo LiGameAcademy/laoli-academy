@@ -1,0 +1,249 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>第04课：杀戮的代价 —— 战斗判定、物理掉落与逻辑闭环 · 老李游戏学院</title><script>
+      try { document.documentElement.dataset.theme = localStorage.getItem("laoli-theme") || "light"; } catch {}
+    </script><style>:root{color-scheme:light;--bg: #faf9f6;--fg: #171c24;--border: #d9d9d3;--panel: #fff;--accent: #245784}:root[data-theme=dark]{color-scheme:dark;--bg: #10151c;--fg: #f1f2f4;--border: #37424e;--panel: #1a222c;--accent: #9acafa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,sans-serif}a{color:var(--accent)}button{font:inherit;cursor:pointer}.shell{width:min(1100px,calc(100% - 32px));margin-inline:auto}.bar,.bar nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap}header.bar{justify-content:space-between;padding-block:20px}footer.bar{margin-block-start:64px;padding-block:20px;border-top:1px solid var(--border)}.brand{font-weight:750;color:inherit;text-decoration:none}.hero{display:grid;isolation:isolate;position:relative;align-items:end;min-height:clamp(310px,48vw,500px);overflow:hidden;border-radius:16px;color:#fff;background:#172630}.hero img,.hero:after{position:absolute;inset:0;width:100%;height:100%}.hero img{object-fit:cover;z-index:-2}.hero:after{content:"";background:linear-gradient(transparent,#080e14eb);z-index:-1}.hero>div{padding:clamp(20px,5vw,52px)}.hero h1{font-size:clamp(1.8rem,5vw,3rem);margin:0}.button{display:inline-block;background:#fff;color:#163550;border-radius:6px;padding:8px 14px;text-decoration:none}.home-series{margin-top:36px}.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}.catalog-header{display:flex;align-items:center;justify-content:space-between;gap:12px}#course-views button{border:1px solid var(--border);background:var(--panel);color:var(--fg);padding:4px 10px;border-radius:6px}#course-views button[aria-pressed=true]{background:var(--accent);color:var(--bg)}.course-card{flex-direction:column;justify-content:start;padding:0;gap:0;overflow:hidden;text-decoration:none}.course-card img{width:100%;height:auto;aspect-ratio:16 / 9;object-fit:cover}.course-copy{display:grid;gap:4px;padding:14px 18px}.course-grid[data-view=list]{grid-template-columns:minmax(0,1fr)}.course-grid[data-view=list] .course-card{flex-direction:row;align-items:center}.course-grid[data-view=list] img{width:clamp(96px,26%,208px);flex-shrink:0}.course-card:hover strong{text-decoration:underline}.course-card span{color:var(--fg)}.action-links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-block:16px}.project-preview{display:block;max-width:100%;height:auto;border-radius:12px}.panel{display:flex;gap:12px;justify-content:space-between;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px}.series li{padding-block:5px}.reading{display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;align-items:start}aside{padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px}aside ol,aside ul{padding-left:22px}aside [aria-current]{font-weight:750;color:var(--fg)}article{min-width:0;max-width:76ch;overflow-wrap:anywhere}article h1{line-height:1.25;margin-top:0}article img{max-width:100%;height:auto;border-radius:6px}article pre{overflow:auto;padding:16px;border-radius:8px}@media(max-width:720px){.reading{grid-template-columns:minmax(0,1fr);gap:20px}}
+</style></head> <body> <header class="shell bar"> <a class="brand" href="/laoli-academy/">老李游戏学院</a> <nav aria-label="主导航"> <a href="/laoli-academy/catalog/">课程</a> <a href="/laoli-academy/#showcase">作品与源码</a> <a href="/laoli-academy/en/" lang="en" hreflang="en">English</a> <button id="theme" type="button">切换主题</button> </nav> </header> <main class="shell"> <p><a href="../">← 2 小时上手 Godot</a></p> <div class="reading"> <aside> <nav aria-label="系列章节"> <strong>系列章节</strong> <ol> <li><a href="../1/">第01课：梦开始的地方 —— GridMap 高级配置与关卡搭建</a></li><li><a href="../2/">第02课：英雄的步伐 —— 角色控制、随身光环与交互基础</a></li><li><a href="../3/">第03课：视界巡航 —— 镜头平滑过渡与交互传送</a></li><li><a href="../4/" aria-current="page">第04课：杀戮的代价 —— 战斗判定、物理掉落与逻辑闭环</a></li><li><a href="../5/">【番外篇】神兵天降 —— 接入“老李通用背包插件”</a></li> </ol> </nav> <details> <summary>本课目录</summary> <ul><li><a href="#本课目标">本课目标：</a></li><li><a href="#第一步唤醒亡灵">第一步：唤醒亡灵</a></li><li><a href="#第二步配置房间脚本-dungeonroomgd">第二步：配置房间脚本 (DungeonRoom.gd)</a></li><li><a href="#第三步神剑出鞘-the-hitbox">第三步：神剑出鞘 (The Hitbox)</a></li><li><a href="#第四步物理掉落与拾取">第四步：物理掉落与拾取</a></li><li><a href="#第五步实战演练与闭环">第五步：实战演练与闭环</a></li><li><a href="#本课小结">本课小结</a></li></ul> </details> </aside> <article> <h1>第04课：杀戮的代价 —— 战斗判定、物理掉落与逻辑闭环</h1> <p>大家好，我是<strong>玩物不丧志的老李</strong>。</p>
+<p>在上一节课，我们打通了大厅与地牢的连接。但现在的地牢空空如也，毫无挑战。今天，我们将唤醒沉睡的亡灵。我们要实现：</p>
+<ol>
+<li><strong>精准的攻击判定</strong>（利用动画驱动 Hitbox）。</li>
+<li><strong>爽快的物理掉落</strong>（让战利品像喷泉一样爆出来）。</li>
+<li><strong>简单的游戏闭环</strong>（杀怪 -> 开门）。</li>
+</ol>
+<h2 id="本课目标"><strong>本课目标：</strong></h2>
+<ol>
+<li>制作 <code>Enemy_Skeleton</code> 敌人场景，分离碰撞盒(Body)与受击盒(Hurtbox)。</li>
+<li>制作 <code>Sword_Hitbox</code>，利用 AnimationPlayer 实现攻击判定。</li>
+<li>制作 <code>Loot_Item</code> (刚体掉落物)，实现物理抛射效果。</li>
+</ol>
+<h2 id="第一步唤醒亡灵">第一步：唤醒亡灵</h2>
+<p>我们需要一个能够挨打的木桩。</p>
+<p>骷髅的模型在<a href="https://kaylousberg.itch.io/kaykit-skeletons">KayKit Skeletons</a>中可以找到。这里我们选择导入<code>skeleton_warrior.gltf</code>。武器导入<code>skeleton_axe.gltf</code>。值得注意的是之前的动画文件我们需要补充导入<code>Rid_Medium_Special</code>动画文件。其中包含适配骷髅怪物的各种动作。</p>
+<p>模型的导入设置以及前期准备与player角色一致，这里不再赘述。
+值得一提的是动画状态机设置，这里我们添加<code>SkeletonsAwakenFloor</code>`SkelectonsIdle<code>和</code>SkeletonsDeath`动画状态，并依次相连。</p>
+<p><img alt="动画状态机设置" loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1392" src="/laoli-academy/_astro/4-1%E4%BA%A1%E7%81%B5%E5%8A%A8%E7%94%BB%E7%8A%B6%E6%80%81%E6%9C%BA.qd1snCMM_1PpwID.png" ></p>
+<ol>
+<li>新建场景，根节点 <strong>CharacterBody3D</strong>，命名为 <code>Enemy_Skeleton</code>。导入 KayKit 的骷髅模型 (<code>skeleton.gltf</code>)。</li>
+<li>设置物理碰撞**：
+<ul>
+<li>添加 <code>CollisionShape3D</code> (Capsule)，包裹住骷髅。</li>
+<li><strong>Layer</strong>: 设为 <strong>4</strong> (我们定义为 Enemy 层)。这个碰撞体是为了防止玩家穿过怪物，也是为了物理推挤。</li>
+</ul>
+</li>
+<li>关键架构：受击盒 (Hurtbox)
+<ul>
+<li>在根节点下添加一个 <strong>Area3D</strong>，命名为 <code>Hurtbox</code>。</li>
+<li>在 <code>Hurtbox</code> 下添加一个新的 <code>CollisionShape3D</code> (Box)，比模型稍微大一圈。</li>
+<li><strong>Layer 设置</strong>：<strong>Layer</strong>: <strong>4</strong> (Enemy 层)。<strong>Mask</strong>: <strong>0</strong> (受击盒不需要去撞别人，只需要等着被撞)。</li>
+</ul>
+</li>
+<li>编写脚本 <code>enemy.gd</code>：</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> CharacterBody3D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> animation_tree: </span><span style="color:#B392F0">AnimationTree</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">Skeleton_Warrior/AnimationTree</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 预留给掉落物的插槽 (稍后制作)</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> loot_scene: </span><span style="color:#B392F0">PackedScene</span><span style="color:#E1E4E8"> </span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 简单的生命值</span></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> hp: </span><span style="color:#B392F0">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 3</span></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> animation_state_machine : </span><span style="color:#B392F0">AnimationNodeStateMachinePlayback</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _ready</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	animation_state_machine </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> animation_tree.</span><span style="color:#B392F0">get</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"parameters/StateMachine/playback"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">	hide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> awaken</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#6A737D">    # 【可选的高级技巧】</span></span>
+<span class="line"><span style="color:#6A737D">    # 为了防止所有骷髅像机器人一样整齐划一地苏醒</span></span>
+<span class="line"><span style="color:#6A737D">    # 我们可以加一个极短的随机延迟，让它们错落有致</span></span>
+<span class="line"><span style="color:#6A737D">    # await get_tree().create_timer(randf_range(0.1, 0.5)).timeout	</span></span>
+<span class="line"><span style="color:#B392F0">    show</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	animation_state_machine.</span><span style="color:#B392F0">travel</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"awaken"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 公开接口：受到伤害</span></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> take_damage</span><span style="color:#E1E4E8">(amount: </span><span style="color:#B392F0">int</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	hp </span><span style="color:#F97583">-=</span><span style="color:#E1E4E8"> amount</span></span>
+<span class="line"><span style="color:#B392F0">	print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"骷髅受到伤害！剩余HP: "</span><span style="color:#E1E4E8">, hp)</span></span>
+<span class="line"><span style="color:#E1E4E8">	</span></span>
+<span class="line"><span style="color:#6A737D">	# 受击反馈 (简单的闪白或动画，这里省略)</span></span>
+<span class="line"><span style="color:#E1E4E8">	</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> hp </span><span style="color:#F97583">&#x3C;=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#B392F0">		die</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> die</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#6A737D">	# 1. 生成掉落物 (稍后实现)</span></span>
+<span class="line"><span style="color:#B392F0">	spawn_loot</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#6A737D">	# 2. 销毁自身</span></span>
+<span class="line"><span style="color:#B392F0">	queue_free</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> spawn_loot</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#6A737D">	# 占位</span></span>
+<span class="line"><span style="color:#F97583">	pass</span></span></code></pre>
+<h2 id="第二步配置房间脚本-dungeonroomgd">第二步：配置房间脚本 (DungeonRoom.gd)</h2>
+<p>我们在之前的课程中设计了 DungeonRoom 基类，并在第3课实现了转场。现在我们要利用房间生命周期来唤醒怪物。</p>
+<p>场景设置建议： 在你的 Room_Dungeon.tscn 场景中，建议创建一个 Node3D 节点命名为 Enemies，把所有骷髅都放在这个节点下面。这样管理起来非常方便。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>- Room_Dungeon (Node3D)</span></span>
+<span class="line"><span>  - Geometry</span></span>
+<span class="line"><span>  - Enemies (Node3D) &#x3C;--- 把骷髅都放这里</span></span>
+<span class="line"><span>    - Skeleton1</span></span>
+<span class="line"><span>    - Skeleton2</span></span></code></pre>
+<p>修改房间代码：打开 <code>dungeon_room.gd</code>（或者具体的子类脚本），完善 <code>on_player_enter</code> 方法：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"></span>
+<span class="line"><span style="color:#F97583">class_name</span><span style="color:#B392F0"> DungeonRoom</span><span style="color:#F97583"> extends</span><span style="color:#B392F0"> Node3D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># ... (之前的 Marker3D 变量) ...</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 引用存放怪物的父节点</span></span>
+<span class="line"><span style="color:#6A737D"># 在编辑器里把那个 "Enemies" 节点拖进来赋值</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> enemies_container: </span><span style="color:#B392F0">Node3D</span><span style="color:#E1E4E8"> </span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># --- 房间生命周期 ---</span></span>
+<span class="line"><span style="color:#6A737D"># 这个函数由 Main.gd (LevelManager) 在传送结束、屏幕亮起前调用</span></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> on_player_enter</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#B392F0">	print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"玩家进入房间："</span><span style="color:#E1E4E8">, name)</span></span>
+<span class="line"><span style="color:#E1E4E8">	</span></span>
+<span class="line"><span style="color:#6A737D">	# 唤醒所有怪物</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> enemies_container:</span></span>
+<span class="line"><span style="color:#B392F0">		_awaken_all_enemies</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _awaken_all_enemies</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#6A737D">	# 遍历 Enemies 节点下的所有孩子</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> enemy </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> enemies_container.</span><span style="color:#B392F0">get_children</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#6A737D">		# 检查孩子是否有 awaken 方法 (防止你把非怪物的节点放进去了)</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#E1E4E8"> enemy.</span><span style="color:#B392F0">has_method</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"awaken"</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">			enemy.</span><span style="color:#B392F0">awaken</span><span style="color:#E1E4E8">()</span></span></code></pre>
+<h2 id="第三步神剑出鞘-the-hitbox">第三步：神剑出鞘 (The Hitbox)</h2>
+<p>主角需要一把能造成伤害的剑。我们不使用物理碰撞来攻击，而是使用更精准的 <strong>Area3D 触发器</strong>。</p>
+<ol>
+<li>
+<p><strong>打开 <code>Player</code> 场景</strong>。</p>
+</li>
+<li>
+<p><strong>添加 Hitbox</strong>：</p>
+<ul>
+<li>在 <code>Visuals</code> 节点下（确保跟随旋转），添加 <strong>Area3D</strong>，命名为 <code>SwordHitbox</code>。</li>
+<li>添加 <code>CollisionShape3D</code> (Box)，调整位置覆盖角色前方攻击范围。</li>
+<li><strong>Layer 设置</strong>：
+<ul>
+<li><strong>Layer</strong>: <strong>0</strong> (不属于任何物理层)。</li>
+<li><strong>Mask</strong>: <strong>4</strong> (专门检测 Enemy 层)。</li>
+</ul>
+</li>
+<li><strong>关键设置</strong>：在 Inspector 中，将 <strong>Monitoring</strong> (监测) 默认为 <strong>False (关闭)</strong>。</li>
+</ul>
+</li>
+</ol>
+<p>平时剑是“钝”的，只有挥舞的那一瞬间才是“利”的。</p>
+<ol start="3">
+<li><strong>动画驱动逻辑 (Animation Tracks)</strong>：
+<ul>
+<li>打开 <code>AnimationPlayer</code>，找到 <code>Attack</code> 动画。</li>
+<li>点击 <strong>添加轨道 (Add Track)</strong> -> <strong>Property Track (属性轨道)</strong> -> 选择 <code>SwordHitbox</code> -> 选择 <code>monitoring</code>。</li>
+<li><strong>打关键帧</strong>：
+<ul>
+<li><strong>0.0s</strong>: <code>False</code> (起手)。</li>
+<li><strong>0.2s</strong> (挥剑瞬间): <code>True</code> (开启伤害检测)。</li>
+<li><strong>0.4s</strong> (收招): <code>False</code> (关闭检测)。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>这就是动作游戏的精髓：判定由动画帧决定，精准且符合直觉。</p>
+<ol start="4">
+<li>给 <code>SwordHitbox</code> 节点添加脚本：</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> Area3D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _ready</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	area_entered.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(_on_area_entered)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_area_entered</span><span style="color:#E1E4E8">(area: </span><span style="color:#B392F0">Area3D</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#6A737D">	# 因为 Mask 设为了 4，所以撞到的一定是敌人的 Hurtbox</span></span>
+<span class="line"><span style="color:#6A737D">	# Hurtbox 的父节点才是 Enemy 实体</span></span>
+<span class="line"><span style="color:#F97583">	var</span><span style="color:#E1E4E8"> enemy </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> area.</span><span style="color:#B392F0">get_parent</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> enemy.</span><span style="color:#B392F0">has_method</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"take_damage"</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">		enemy.</span><span style="color:#B392F0">take_damage</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">) </span><span style="color:#6A737D"># 造成 1 点伤害</span></span></code></pre>
+<p><img alt="攻击判定关键帧设置" loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1392" src="/laoli-academy/_astro/4-2monitoring%E5%B1%9E%E6%80%A7.D469003a_2stC9B.png" ></p>
+<h2 id="第四步物理掉落与拾取">第四步：物理掉落与拾取</h2>
+<p>现在我们来做那个让玩家上瘾的“爆装备”环节。</p>
+<h3 id="1-制作掉落物场景">1. 制作掉落物场景</h3>
+<ul>
+<li>新建场景，根节点 <strong>RigidBody3D</strong> (刚体)，命名为 <code>Loot_Potion</code>。</li>
+<li>为什么用刚体？因为我们要把它像垃圾一样抛出去，让它在地上弹跳！</li>
+<li>导入药水模型。</li>
+<li>添加 <code>CollisionShape3D</code> (Sphere)。</li>
+<li><strong>Layer mask设置</strong>：设为 <strong>Environment</strong> (1) 层，确保它能掉在地上，不会穿过地板。</li>
+<li><strong>Lock Rotation</strong>：建议勾选，防止药水瓶在地上滚个不停。</li>
+</ul>
+<h3 id="2-添加拾取检测">2. 添加拾取检测</h3>
+<ul>
+<li>在根节点下添加 <strong>Area3D</strong>。范围比刚体稍大, 命名为<code>LootArea</code>。</li>
+<li>添加脚本 <code>loot_item.gd</code>：</li>
+<li>设置<strong>Layer mask</strong>：<strong>0</strong> (不属于任何物理层)。<strong>Mask</strong>: <strong>2</strong> (专门检测 Player 层)。</li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> RigidBody3D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> loot_area: </span><span style="color:#B392F0">Area3D</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">LootArea</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _ready</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	loot_area.body_entered.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(_on_body_entered)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> collect</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#B392F0">	print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">">>> 捡到了 [红药水]！"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">	print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">">>> 系统提示：由于背包系统尚未开发，物品已消失在虚空中..."</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">	</span></span>
+<span class="line"><span style="color:#6A737D">	# 播放音效 (可选)</span></span>
+<span class="line"><span style="color:#6A737D">	# Audio.play("pop")</span></span>
+<span class="line"><span style="color:#E1E4E8">	</span></span>
+<span class="line"><span style="color:#B392F0">	queue_free</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_body_entered</span><span style="color:#E1E4E8">(body) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> body.</span><span style="color:#B392F0">is_in_group</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Player"</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#B392F0">		collect</span><span style="color:#E1E4E8">()</span></span></code></pre>
+<ol start="3">
+<li>完善怪物掉落逻辑：</li>
+</ol>
+<p>回到 <code>enemy.gd</code>，完善 <code>spawn_loot()</code>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> spawn_loot</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> loot_scene:</span></span>
+<span class="line"><span style="color:#F97583">        var</span><span style="color:#E1E4E8"> loot </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> loot_scene.</span><span style="color:#B392F0">instantiate</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#6A737D">        # 添加到当前场景 (不要加给怪物自己，因为怪物要死)</span></span>
+<span class="line"><span style="color:#B392F0">        get_parent</span><span style="color:#E1E4E8">().</span><span style="color:#B392F0">add_child</span><span style="color:#E1E4E8">(loot)</span></span>
+<span class="line"><span style="color:#E1E4E8">        loot.global_position </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> global_position </span><span style="color:#F97583">+</span><span style="color:#B392F0"> Vector3</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">        </span></span>
+<span class="line"><span style="color:#6A737D">        # 给它一个随机的爆炸推力！(Juice)</span></span>
+<span class="line"><span style="color:#F97583">        var</span><span style="color:#E1E4E8"> random_dir </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Vector3</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">randf_range</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">-</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">), </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#B392F0">randf_range</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">-</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">)).</span><span style="color:#B392F0">normalized</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">        loot.</span><span style="color:#B392F0">apply_impulse</span><span style="color:#E1E4E8">(random_dir </span><span style="color:#F97583">*</span><span style="color:#79B8FF"> 5.0</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<ol start="4">
+<li><strong>配置</strong>：
+<ul>
+<li>将 <code>Loot_Potion.tscn</code> 拖给 <code>Enemy_Skeleton</code> 场景脚本里的 <code>Loot Scene</code> 变量。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="第五步实战演练与闭环">第五步：实战演练与闭环</h2>
+<ol>
+<li>在 <code>Room_Dungeon</code> 场景里放置 3-5 个骷髅。</li>
+<li>运行游戏：从大厅传送进地牢。拔剑砍杀！看着骷髅碎裂，药水瓶“嘭”地一声爆出来，在地上弹跳。跑过去捡起来。控制台打印：“物品已消失…”。</li>
+</ol>
+<p><img alt="实战演练" loading="lazy" decoding="async" fetchpriority="auto" width="2307" height="1298" src="/laoli-academy/_astro/4-3%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA.DHXa64aj_Z1Vt7d0.png" ></p>
+<hr>
+<h2 id="本课小结">本课小结</h2>
+<p>恭喜！你完成了一个可玩的地牢 RPG Demo！
+你能跑、能砍、能捡东西、能过图。</p>
+<p><strong>但是… 现在的游戏体验完整吗？</strong></p>
+<ol>
+<li>背包去哪了？你捡了一地的药水，界面上却没有任何显示，也不知道自己有多少血瓶。</li>
+<li>任务在哪？你杀光了骷髅，成了英雄，但村长不知道，也没有人给你发奖励。</li>
+</ol>
+<p>这就是“Demo”和“商业游戏”的区别。</p>
+<p>在我们的《Godot 游戏框架设计与实现：对话与任务篇》进阶课程中，我们将解决这些所有问题：</p>
+<ul>
+<li>我们将构建 <strong>数据驱动的任务系统</strong>，自动记录你的击杀。</li>
+<li>我们将构建 <strong>可视化的背包系统</strong>，让你看到每一个战利品。</li>
+<li>我们将构建 <strong>剧情演出系统</strong>，让 BOSS 登场充满压迫感。</li>
+</ul>
+<hr>
+<p><a href="../3/">← 上一课</a> · <a href="../">系列目录</a> · <a href="../5/">下一课 →</a></p> </article> </div> </main> <footer class="shell bar"> <a href="https://space.bilibili.com/8618918">B站</a> <a href="https://github.com/LiGameAcademy">GitHub</a> <a href="https://godot-li.itch.io/">itch.io</a> <a href="https://wx.zsxq.com/group/28885154818841">知识星球</a> </footer> <script type="module">document.querySelector("#theme")?.addEventListener("click",()=>{const e=document.documentElement,t=e.dataset.theme==="dark"?"light":"dark";e.dataset.theme=t;try{localStorage.setItem("laoli-theme",t)}catch{}});</script> </body> </html>

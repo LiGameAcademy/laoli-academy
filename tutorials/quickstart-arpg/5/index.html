@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>【番外篇】神兵天降 —— 接入“老李通用背包插件” · 老李游戏学院</title><script>
+      try { document.documentElement.dataset.theme = localStorage.getItem("laoli-theme") || "light"; } catch {}
+    </script><style>:root{color-scheme:light;--bg: #faf9f6;--fg: #171c24;--border: #d9d9d3;--panel: #fff;--accent: #245784}:root[data-theme=dark]{color-scheme:dark;--bg: #10151c;--fg: #f1f2f4;--border: #37424e;--panel: #1a222c;--accent: #9acafa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,sans-serif}a{color:var(--accent)}button{font:inherit;cursor:pointer}.shell{width:min(1100px,calc(100% - 32px));margin-inline:auto}.bar,.bar nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap}header.bar{justify-content:space-between;padding-block:20px}footer.bar{margin-block-start:64px;padding-block:20px;border-top:1px solid var(--border)}.brand{font-weight:750;color:inherit;text-decoration:none}.hero{display:grid;isolation:isolate;position:relative;align-items:end;min-height:clamp(310px,48vw,500px);overflow:hidden;border-radius:16px;color:#fff;background:#172630}.hero img,.hero:after{position:absolute;inset:0;width:100%;height:100%}.hero img{object-fit:cover;z-index:-2}.hero:after{content:"";background:linear-gradient(transparent,#080e14eb);z-index:-1}.hero>div{padding:clamp(20px,5vw,52px)}.hero h1{font-size:clamp(1.8rem,5vw,3rem);margin:0}.button{display:inline-block;background:#fff;color:#163550;border-radius:6px;padding:8px 14px;text-decoration:none}.home-series{margin-top:36px}.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}.catalog-header{display:flex;align-items:center;justify-content:space-between;gap:12px}#course-views button{border:1px solid var(--border);background:var(--panel);color:var(--fg);padding:4px 10px;border-radius:6px}#course-views button[aria-pressed=true]{background:var(--accent);color:var(--bg)}.course-card{flex-direction:column;justify-content:start;padding:0;gap:0;overflow:hidden;text-decoration:none}.course-card img{width:100%;height:auto;aspect-ratio:16 / 9;object-fit:cover}.course-copy{display:grid;gap:4px;padding:14px 18px}.course-grid[data-view=list]{grid-template-columns:minmax(0,1fr)}.course-grid[data-view=list] .course-card{flex-direction:row;align-items:center}.course-grid[data-view=list] img{width:clamp(96px,26%,208px);flex-shrink:0}.course-card:hover strong{text-decoration:underline}.course-card span{color:var(--fg)}.action-links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-block:16px}.project-preview{display:block;max-width:100%;height:auto;border-radius:12px}.panel{display:flex;gap:12px;justify-content:space-between;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px}.series li{padding-block:5px}.reading{display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;align-items:start}aside{padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px}aside ol,aside ul{padding-left:22px}aside [aria-current]{font-weight:750;color:var(--fg)}article{min-width:0;max-width:76ch;overflow-wrap:anywhere}article h1{line-height:1.25;margin-top:0}article img{max-width:100%;height:auto;border-radius:6px}article pre{overflow:auto;padding:16px;border-radius:8px}@media(max-width:720px){.reading{grid-template-columns:minmax(0,1fr);gap:20px}}
+</style></head> <body> <header class="shell bar"> <a class="brand" href="/laoli-academy/">老李游戏学院</a> <nav aria-label="主导航"> <a href="/laoli-academy/catalog/">课程</a> <a href="/laoli-academy/#showcase">作品与源码</a> <a href="/laoli-academy/en/" lang="en" hreflang="en">English</a> <button id="theme" type="button">切换主题</button> </nav> </header> <main class="shell"> <p><a href="../">← 2 小时上手 Godot</a></p> <div class="reading"> <aside> <nav aria-label="系列章节"> <strong>系列章节</strong> <ol> <li><a href="../1/">第01课：梦开始的地方 —— GridMap 高级配置与关卡搭建</a></li><li><a href="../2/">第02课：英雄的步伐 —— 角色控制、随身光环与交互基础</a></li><li><a href="../3/">第03课：视界巡航 —— 镜头平滑过渡与交互传送</a></li><li><a href="../4/">第04课：杀戮的代价 —— 战斗判定、物理掉落与逻辑闭环</a></li><li><a href="../5/" aria-current="page">【番外篇】神兵天降 —— 接入“老李通用背包插件”</a></li> </ol> </nav> <details> <summary>本课目录</summary> <ul><li><a href="#本课目标">本课目标：</a></li><li><a href="#第一步插件安装">第一步：插件安装</a></li><li><a href="#第二步配置数据--定义你的战利品">第二步：配置数据 —— 定义你的战利品</a></li><li><a href="#第三步组装主角--挂载背包组件">第三步：组装主角 —— 挂载背包组件</a></li><li><a href="#第四步ui-连接--谁的背包">第四步：UI 连接 —— 谁的背包？</a></li><li><a href="#第五步打通闭环--拾取物品">第五步：打通闭环 —— 拾取物品</a></li></ul> </details> </aside> <article> <h1>【番外篇】神兵天降 —— 接入“老李通用背包插件”</h1> <p>大家好，我是<strong>玩物不丧志的老李</strong>。</p>
+<p>在上一节课中，我们在地牢里捡起了一瓶红药水，但控制台却无情地告诉我们：“物品已消失在虚空中”。
+为什么？因为我们没有<strong>背包系统</strong>。</p>
+<p>如果要从零开始写一个完善的背包（包含堆叠、分类、装备栏、拖拽），可能需要好几节课的时间。但在商业开发中，我们通常不会重复造轮子。</p>
+<p>今天，我们将把一套我已经封装好的背包插件 <a href="https://gitee.com/Giab/godot-simple-inventory"><strong>GodotSimpleInventory</strong></a> 直接接入到我们的地牢项目中。</p>
+<p>只需 10 分钟，你的游戏将拥有完整的物品管理能力！</p>
+<h2 id="本课目标"><strong>本课目标：</strong></h2>
+<ol>
+<li>安装并启用 <strong>GodotSimpleInventory</strong> 背包插件。</li>
+<li>配置 <strong>Item</strong> 资源数据（药水、武器）。</li>
+<li>实装 <strong>UI</strong> 并打通“拾取 -> 进包”的逻辑闭环。</li>
+</ol>
+<h2 id="第一步插件安装">第一步：插件安装</h2>
+<ol>
+<li>将插件文件夹 <code>res://addons/simple_inventory/</code> 复制到你的项目<code>addons</code>目录下。</li>
+<li>在插件管理器中启用 <strong>GodotSimpleInventory</strong> 插件。</li>
+</ol>
+<h2 id="第二步配置数据--定义你的战利品">第二步：配置数据 —— 定义你的战利品</h2>
+<p>插件是通用的，但“红药水”是这个游戏特有的。我们需要利用插件提供的 <code>Item</code> 类来定义它。</p>
+<ol>
+<li><strong>创建资源文件夹</strong>：在 <code>res://data/</code> 下新建文件夹 <code>items</code>。</li>
+</ol>
+<h3 id="2-创建红药水">2. <strong>创建红药水</strong></h3>
+<ul>
+<li>右键 -> <strong>新建资源 (New Resource)</strong>。</li>
+<li>搜索 <strong>Item</strong> (这是插件提供的自定义类)。</li>
+<li>命名为 <code>potion_health_small.tres</code>。</li>
+</ul>
+<h3 id="3--填写属性">3.  <strong>填写属性</strong>：</h3>
+<ul>
+<li><strong>Name</strong>: 小红药水</li>
+<li><strong>Description</strong>: 恢复 20 点生命值。</li>
+<li><strong>Category</strong>: <code>CONSUMABLE</code> (消耗品)。</li>
+<li><strong>Max Stack</strong>: 10 (允许堆叠 10 个)。</li>
+<li><strong>Icon</strong>: 拖入之前的药水贴图。</li>
+<li><strong>Attributes</strong>: 点击添加键值对，例如 <code>health: 20</code>。</li>
+</ul>
+<p>图标就用svg格式，自己画一个。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="xml"><code><span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#85E89D">svg</span><span style="color:#B392F0"> width</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"64"</span><span style="color:#B392F0"> height</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"64"</span><span style="color:#B392F0"> viewBox</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"0 0 64 64"</span><span style="color:#B392F0"> fill</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"none"</span><span style="color:#B392F0"> xmlns</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"http://www.w3.org/2000/svg"</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#85E89D">rect</span><span style="color:#B392F0"> x</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"26"</span><span style="color:#B392F0"> y</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"4"</span><span style="color:#B392F0"> width</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"12"</span><span style="color:#B392F0"> height</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"10"</span><span style="color:#B392F0"> rx</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"2"</span><span style="color:#B392F0"> fill</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"#A0522D"</span><span style="color:#E1E4E8">/></span></span>
+<span class="line"><span style="color:#E1E4E8">  </span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#85E89D">path</span><span style="color:#B392F0"> d</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"M26 14H38V24.5C45.5 26.5 52 33 52 42C52 53.0457 43.0457 62 32 62C20.9543 62 12 53.0457 12 42C12 33 18.5 26.5 26 24.5V14Z"</span><span style="color:#B392F0"> fill</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"#FF5555"</span><span style="color:#E1E4E8">/></span></span>
+<span class="line"><span style="color:#E1E4E8">  </span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#85E89D">path</span><span style="color:#B392F0"> d</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"M12 42C12 53.0457 20.9543 62 32 62C43.0457 62 52 53.0457 52 42C52 38 50 35 48 34C40 40 24 40 16 34C13 36 12 39 12 42Z"</span><span style="color:#B392F0"> fill</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"#D32F2F"</span><span style="color:#B392F0"> fill-opacity</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"0.3"</span><span style="color:#E1E4E8">/></span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#85E89D">path</span><span style="color:#B392F0"> d</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"M20 32Q18 36 18 42"</span><span style="color:#B392F0"> stroke</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"white"</span><span style="color:#B392F0"> stroke-width</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"3"</span><span style="color:#B392F0"> stroke-linecap</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"round"</span><span style="color:#B392F0"> opacity</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"0.6"</span><span style="color:#E1E4E8">/></span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#85E89D">circle</span><span style="color:#B392F0"> cx</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"44"</span><span style="color:#B392F0"> cy</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"30"</span><span style="color:#B392F0"> r</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"3"</span><span style="color:#B392F0"> fill</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"white"</span><span style="color:#B392F0"> opacity</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"0.5"</span><span style="color:#E1E4E8">/></span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#85E89D">path</span><span style="color:#B392F0"> d</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"M26 14H38V24.5C45.5 26.5 52 33 52 42C52 53.0457 43.0457 62 32 62C20.9543 62 12 53.0457 12 42C12 33 18.5 26.5 26 24.5V14Z"</span><span style="color:#B392F0"> stroke</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"#2C3E50"</span><span style="color:#B392F0"> stroke-width</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"4"</span><span style="color:#B392F0"> stroke-linejoin</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"round"</span><span style="color:#E1E4E8">/></span></span>
+<span class="line"><span style="color:#E1E4E8">  </span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#85E89D">path</span><span style="color:#B392F0"> d</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"M26 14V4H38V14"</span><span style="color:#B392F0"> stroke</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"#2C3E50"</span><span style="color:#B392F0"> stroke-width</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"4"</span><span style="color:#B392F0"> stroke-linejoin</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"round"</span><span style="color:#E1E4E8">/></span></span>
+<span class="line"><span style="color:#E1E4E8">  </span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#85E89D">path</span><span style="color:#B392F0"> d</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"M24 14H40"</span><span style="color:#B392F0"> stroke</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"#2C3E50"</span><span style="color:#B392F0"> stroke-width</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"4"</span><span style="color:#B392F0"> stroke-linecap</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"round"</span><span style="color:#E1E4E8">/></span></span>
+<span class="line"><span style="color:#E1E4E8">&#x3C;/</span><span style="color:#85E89D">svg</span><span style="color:#E1E4E8">></span></span></code></pre>
+<p><img alt="红药水图标" loading="lazy" decoding="async" fetchpriority="auto" width="2560" height="1392" src="/laoli-academy/_astro/5-1%E7%BA%A2%E8%8D%AF%E6%B0%B4%E9%85%8D%E7%BD%AE.C_EAX1BH_Z1WlDhC.png" ></p>
+<h2 id="第三步组装主角--挂载背包组件">第三步：组装主角 —— 挂载背包组件</h2>
+<p>既然是“老李通用背包插件”，它的核心理念就是即插即用。我们要给主角“插”上一个背包。</p>
+<ol>
+<li>
+<p>打开主角场景：打开 Player.tscn。</p>
+</li>
+<li>
+<p>添加组件：在 Player 根节点下，搜索并添加 C_Inventory 节点（这是插件提供的核心类）。重命名为InventoryComponent。</p>
+</li>
+<li>
+<p>在编辑器中配置：</p>
+<ul>
+<li>选中 InventoryComponent。</li>
+<li>在右侧 Inspector 中，你可以直接看到插件暴露的参数。</li>
+<li>Equip Slots: 这里已经预设了装备槽（头、胸、腿等），你可以在这里增删改。</li>
+<li>Max Slot Count: 比如设为 20。
+这就是组件化的好处，不用写代码，直接在属性面板里配置你的背包容量。</li>
+</ul>
+</li>
+<li>
+<p>初始化测试数据 (可选)：在 Player.gd 的 _ready 函数里，给刚出生的主角塞点东西。</p>
+</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#6A737D"># Player.gd</span></span>
+<span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> CharacterBody3D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> inventory_comp </span><span style="color:#F97583">=</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">InventoryComponent</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _ready</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#6A737D">    # ... 之前的初始化 ...</span></span>
+<span class="line"><span style="color:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#6A737D">    # 【测试福利】送 3 瓶药水</span></span>
+<span class="line"><span style="color:#F97583">    var</span><span style="color:#E1E4E8"> potion </span><span style="color:#F97583">=</span><span style="color:#B392F0"> load</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://data/items/potion_health_small.tres"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> potion:</span></span>
+<span class="line"><span style="color:#F97583">        for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">in</span><span style="color:#B392F0"> range</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">            inventory_comp.</span><span style="color:#B392F0">add_item</span><span style="color:#E1E4E8">(potion.</span><span style="color:#B392F0">duplicate</span><span style="color:#E1E4E8">())</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> get_inventory</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#E1E4E8"> C_Inventory:</span></span>
+<span class="line"><span style="color:#F97583">	return</span><span style="color:#E1E4E8"> inventory_component</span></span></code></pre>
+<p>现在，只要游戏启动，玩家就在逻辑上拥有了一个背包，并且里面已经装了3瓶药水。</p>
+<hr>
+<h2 id="第四步ui-连接--谁的背包">第四步：UI 连接 —— 谁的背包？</h2>
+<p>现在 UI 需要知道它显示的是谁的背包。我们找 Player。</p>
+<ol>
+<li>打开 <code>Main.tscn</code>。</li>
+<li>创建 <code>CanvasLayer</code> (UI层)，添加子节点Control，命名为“HUD”。</li>
+<li>在<code>HUD</code>节点下，实例化场景：<code>res://addons/simple_inventory/src/widgets/inventory.tscn</code>，将其命名为<code>Inventory</code></li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#6A737D"># Main.gd</span></span>
+<span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> Node3D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> player </span><span style="color:#F97583">=</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">Player</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> inventory_ui </span><span style="color:#F97583">=</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">HUD/Inventory</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _ready</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#6A737D">    # ... 之前的代码 ...</span></span>
+<span class="line"><span style="color:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#6A737D">    # 【核心修改】依赖注入</span></span>
+<span class="line"><span style="color:#6A737D">    # 我们获取 Player 身上的组件，传给 UI</span></span>
+<span class="line"><span style="color:#F97583">    var</span><span style="color:#E1E4E8"> player_inventory </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> player.</span><span style="color:#B392F0">get_inventory</span><span style="color:#E1E4E8">() </span><span style="color:#6A737D"># 确保你在player脚本中实现了这个方法</span></span>
+<span class="line"><span style="color:#E1E4E8">    inventory_ui.</span><span style="color:#B392F0">initialize</span><span style="color:#E1E4E8">(player_inventory)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _unhandled_input</span><span style="color:#E1E4E8">(event):</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> event.</span><span style="color:#B392F0">is_action_pressed</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"toggle_inventory"</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> inventory_ui.visible:</span></span>
+<span class="line"><span style="color:#E1E4E8">            inventory_ui.</span><span style="color:#B392F0">hide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#F97583">        else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">            inventory_ui.</span><span style="color:#B392F0">open</span><span style="color:#E1E4E8">()</span></span></code></pre>
+<p><strong>注意</strong>：记得去 <code>Project Settings -> Input Map</code> 添加 <code>toggle_inventory</code> 绑定到 <code>B</code> 或 <code>I</code> 键。</p>
+<hr>
+<h2 id="第五步打通闭环--拾取物品">第五步：打通闭环 —— 拾取物品</h2>
+<p>最后一步，我们要修改第 04 课留下的 <code>LootItem</code> 脚本，让地上的东西真的进包。</p>
+<ol>
+<li><strong>修改掉落物场景</strong>：</li>
+</ol>
+<ul>
+<li>打开 <code>Loot_Potion.tscn</code>。</li>
+<li>在根节点脚本 <code>loot_item.gd</code> 中，增加一个导出变量，用于指定这个掉落物对应哪个数据。</li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> RigidBody3D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> loot_area: </span><span style="color:#B392F0">Area3D</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">LootArea</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> item_def: </span><span style="color:#B392F0">Item</span><span style="color:#E1E4E8"> </span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _ready</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	loot_area.body_entered.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(_on_body_entered)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> collect</span><span style="color:#E1E4E8">(target_inventory: </span><span style="color:#B392F0">C_Inventory</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#B392F0"> is_instance_valid</span><span style="color:#E1E4E8">(item_def):</span></span>
+<span class="line"><span style="color:#B392F0">		print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"物品进入背包："</span><span style="color:#E1E4E8">, item_def.name)</span></span>
+<span class="line"><span style="color:#6A737D">		# 调用组件的方法添加物品</span></span>
+<span class="line"><span style="color:#E1E4E8">		target_inventory.</span><span style="color:#B392F0">add_item</span><span style="color:#E1E4E8">(item_def.</span><span style="color:#B392F0">duplicate</span><span style="color:#E1E4E8">())</span></span>
+<span class="line"><span style="color:#E1E4E8">		</span></span>
+<span class="line"><span style="color:#6A737D">		# 播放音效...</span></span>
+<span class="line"><span style="color:#B392F0">		queue_free</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#F97583">	else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#B392F0">		printerr</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"错误：掉落物未配置 Item 数据"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_body_entered</span><span style="color:#E1E4E8">(body) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#6A737D">    # 组件化开发</span></span>
+<span class="line"><span style="color:#6A737D">	# 我们不管撞到的是 Player 还是 NPC，只要它身上有 InventoryComponent，就能捡！</span></span>
+<span class="line"><span style="color:#F97583">	var</span><span style="color:#E1E4E8"> inventory </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> body.</span><span style="color:#B392F0">get_inventory</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#B392F0"> is_instance_valid</span><span style="color:#E1E4E8">(inventory):</span></span>
+<span class="line"><span style="color:#B392F0">		collect</span><span style="color:#E1E4E8">(inventory)</span></span></code></pre>
+<ol start="2">
+<li><strong>配置掉落物</strong>：</li>
+</ol>
+<ul>
+<li>在 <code>Loot_Potion.tscn</code> 的 Inspector 中，将之前创建的 <code>potion_health_small.tres</code> 拖入 <strong>Item Def</strong> 属性。</li>
+</ul>
+<hr>
+<h3 id="第六步见证奇迹">第六步：见证奇迹</h3>
+<p>运行游戏 (F5)。</p>
+<ol>
+<li><strong>开局</strong>：按 <strong>B</strong> 键打开背包，你会看到已经有了 3 瓶药水（这是我们在 <code>_ready</code> 里送的）。</li>
+<li><strong>战斗</strong>：去地牢砍死骷髅。</li>
+<li><strong>掉落</strong>：骷髅爆出一个药水瓶（刚体物理效果）。</li>
+<li><strong>拾取</strong>：走过去，药水瓶消失。</li>
+<li><strong>验证</strong>：再次按 <strong>B</strong> 键。看！背包里的药水数量增加了！而且它们自动堆叠在了一起！</li>
+<li><strong>整理</strong>：点击“整理”按钮，看着混乱的格子瞬间变得井井有条。</li>
+</ol>
+<hr>
+<h3 id="本课小结">本课小结</h3>
+<p>这就是<strong>插件化开发</strong>的力量。
+我们没有写一行关于“数组操作”、“格子绘制”、“堆叠算法”的代码，仅仅通过<strong>配置</strong>和<strong>调用接口</strong>，就为游戏加入了一个背包系统。</p>
+<p><strong>老李的插件 GodotGear</strong> 帮我们解决了所有底层脏活累活，让我们能专注于游戏设计。</p>
+<p>在接下来的课程中，我们将继续完善这个系统，利用背包里的 <strong>Key (钥匙)</strong> 去打开地牢深处的 <strong>Gate (大门)</strong>。</p>
+<p><strong>这里是老李游戏学院，我们下节课见！</strong></p>
+<hr>
+<p><a href="../4/">← 上一课</a> · <a href="../">系列目录</a></p> </article> </div> </main> <footer class="shell bar"> <a href="https://space.bilibili.com/8618918">B站</a> <a href="https://github.com/LiGameAcademy">GitHub</a> <a href="https://godot-li.itch.io/">itch.io</a> <a href="https://wx.zsxq.com/group/28885154818841">知识星球</a> </footer> <script type="module">document.querySelector("#theme")?.addEventListener("click",()=>{const e=document.documentElement,t=e.dataset.theme==="dark"?"light":"dark";e.dataset.theme=t;try{localStorage.setItem("laoli-theme",t)}catch{}});</script> </body> </html>

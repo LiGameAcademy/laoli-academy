@@ -1,0 +1,62 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, getEntry } from "astro:content";
+
+const { english = false, standalone = false } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const courses = await getCollection("courses", ({ data }) =>
+  !data.free && (english ? data.language === "en" && Boolean(data.patreon) : data.language === "zh-CN"),
+);
+const free = await getEntry("courses", "quickstart-arpg");
+const Heading = standalone ? "h1" : "h2";
+---
+<section class="home-series" id="courses">
+  <div class="catalog-header">
+    <Heading>{english ? "Courses" : "课程目录"}</Heading>
+    <div id="course-views" hidden role="group" aria-label={english ? "Catalog layout" : "课程目录布局"}>
+      <button type="button" data-view="grid" aria-pressed="true">{english ? "Grid" : "网格"}</button>
+      <button type="button" data-view="list" aria-pressed="false">{english ? "List" : "列表"}</button>
+    </div>
+  </div>
+  <div class="course-grid">
+    <a class="panel course-card" href={base + "/tutorials/quickstart-arpg/"}>
+      <Image src={free.data.cover} alt="" loading="lazy" />
+      <div class="course-copy">
+        <small>{english ? "Free · Chinese only" : "免费 · 站内阅读"}</small>
+        <strong>{english ? free.data.englishTitle : free.data.title}</strong>
+        <span>{english ? free.data.englishSummary : free.data.summary}</span>
+      </div>
+    </a>
+    {courses.map(({ id, data }) => (
+      <a class="panel course-card" href={base + `/courses/${id}/`}>
+        <Image src={data.cover} alt="" loading="lazy" />
+        <div class="course-copy">
+          <small>{data.external ? (english ? "Platform tutorial" : "平台教程") : (english ? "Paid · Course overview" : "付费 · 查看课程介绍")}</small>
+          <strong>{data.title}</strong>
+          <span>{data.summary}</span>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+<script>
+  const controls = document.querySelector<HTMLElement>("#course-views");
+  const catalog = document.querySelector<HTMLElement>(".course-grid");
+
+  if (controls && catalog) {
+    const buttons = controls.querySelectorAll<HTMLButtonElement>("button[data-view]");
+    const selectView = (view: "grid" | "list") => {
+      catalog.dataset.view = view;
+      buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
+    };
+    try {
+      if (localStorage.getItem("laoli-course-view") === "list") selectView("list");
+    } catch {}
+    controls.hidden = false;
+    buttons.forEach((button) => button.addEventListener("click", () => {
+      const view = button.dataset.view === "list" ? "list" : "grid";
+      selectView(view);
+      try { localStorage.setItem("laoli-course-view", view); } catch {}
+    }));
+  }
+</script>

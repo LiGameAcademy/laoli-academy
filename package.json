@@ -1,0 +1,13 @@
+{
+  "name": "laoli-academy-static",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node prepare.mjs && astro dev",
+    "build": "node prepare.mjs && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.0.0"
+  }
+}

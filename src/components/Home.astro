@@ -1,0 +1,24 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Catalog from "./Catalog.astro";
+import cover from "../generated/images/1-5游戏运行截图.png";
+
+const { english = false } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<Base title={english ? "Home" : "首页"} lang={english ? "en" : "zh-CN"}>
+  <section class="hero">
+    <Image src={cover} alt={english ? "Godot dungeon gameplay" : "Godot 复古地牢运行画面"} loading="eager" />
+    <div>
+      <h1>{english ? "Make your first game with Godot" : "用 Godot 做你的第一款游戏"}</h1>
+      <p>{english ? "Build a retro dungeon, then add a player, combat, and loot." : "从搭建复古地牢开始，跟着图文教程把角色、战斗和掉落做出来。"}</p>
+      <a class="button" href={base + (english ? "/en/catalog/" : "/catalog/")}>{english ? "Browse courses →" : "浏览课程 →"}</a>
+    </div>
+  </section>
+  <Catalog english={english} />
+  <section class="home-series" id="showcase">
+    <h2>{english ? "Projects and source code" : "作品与源码"}</h2>
+    <a class="panel" href={base + "/projects/retro-dungeon/"}>{english ? "Retro Dungeon Demo (Chinese)" : "复古地牢 Demo"} <span>→</span></a>
+  </section>
+</Base>

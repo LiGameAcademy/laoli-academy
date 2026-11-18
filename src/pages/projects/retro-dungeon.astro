@@ -1,0 +1,17 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import screenshot from "../../generated/images/1-5游戏运行截图.png";
+import { dungeonSource } from "../../projects";
+---
+<Base title="复古地牢 Demo">
+  <p><a href="../../#showcase">← 作品与源码</a></p>
+  <h1>复古地牢 Demo</h1>
+  <p>《2 小时上手 Godot》的配套 3D 地牢工程，包含角色移动、场景切换、战斗判定和物品掉落。</p>
+  <nav class="action-links" aria-label="项目资源">
+    <a href={dungeonSource}>获取 Gitee 源码</a>
+    <a href="../../tutorials/quickstart-arpg/">跟着课程从头做一遍</a>
+  </nav>
+  <p>获取源码后，用 Godot 4 导入工程里的 <code>project.godot</code>，运行项目体验 Demo。</p>
+  <Image class="project-preview" src={screenshot} alt="复古地牢 Demo 的运行截图" />
+</Base>

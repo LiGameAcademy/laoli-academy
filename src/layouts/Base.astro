@@ -1,0 +1,48 @@
+---
+import "../styles.css";
+const { title, lang = "zh-CN" } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const english = lang === "en";
+const home = english ? "/en/" : "/";
+const alternate = Astro.props.alternatePath ?? (english ? "/" : "/en/");
+const brand = english ? "Li Game Academy" : "老李游戏学院";
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title} · {brand}</title>
+    <script is:inline>
+      try { document.documentElement.dataset.theme = localStorage.getItem("laoli-theme") || "light"; } catch {}
+    </script>
+  </head>
+  <body>
+    <header class="shell bar">
+      <a class="brand" href={base + home}>{brand}</a>
+      <nav aria-label={english ? "Main navigation" : "主导航"}>
+        <a href={base + home + "catalog/"}>{english ? "Courses" : "课程"}</a>
+        <a href={base + home + "#showcase"}>{english ? "Projects & source" : "作品与源码"}</a>
+        <a href={base + alternate} lang={english ? "zh-CN" : "en"} hreflang={english ? "zh-CN" : "en"}>{english ? "简体中文" : "English"}</a>
+        <button id="theme" type="button">{english ? "Toggle theme" : "切换主题"}</button>
+      </nav>
+    </header>
+    <main class="shell"><slot /></main>
+    <footer class="shell bar">
+      <a href="https://space.bilibili.com/8618918">{english ? "Bilibili" : "B站"}</a>
+      <a href="https://github.com/LiGameAcademy">GitHub</a>
+      <a href="https://godot-li.itch.io/">itch.io</a>
+      {english
+        ? <a href="https://www.patreon.com/cw/LiGameAcademy">Patreon</a>
+        : <a href="https://wx.zsxq.com/group/28885154818841">知识星球</a>}
+    </footer>
+    <script>
+      document.querySelector("#theme")?.addEventListener("click", () => {
+        const root = document.documentElement;
+        const theme = root.dataset.theme === "dark" ? "light" : "dark";
+        root.dataset.theme = theme;
+        try { localStorage.setItem("laoli-theme", theme); } catch {}
+      });
+    </script>
+  </body>
+</html>

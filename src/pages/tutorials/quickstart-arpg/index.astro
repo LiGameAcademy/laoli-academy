@@ -1,0 +1,20 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import cover from "../../../generated/images/1-5游戏运行截图.png";
+import Base from "../../../layouts/Base.astro";
+import { dungeonSource } from "../../../projects";
+const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="2 小时上手 Godot" alternatePath="/en/catalog/">
+  <h1>2 小时上手 Godot</h1>
+  <p>打造你的第一个 3D 地牢游戏。四节正课和一篇背包插件番外。</p>
+  <Image src={cover} alt="复古地牢运行截图" class="project-preview" />
+  <nav class="action-links" aria-label="配套项目">
+    <a href="../../projects/retro-dungeon/">查看复古地牢 Demo</a>
+    <a href={dungeonSource}>查看 Gitee 源码</a>
+  </nav>
+  <ol class="series">
+    {lessons.map(({data}) => <li><a class="panel" href={`./${data.order}/`}>{data.title} <span>→</span></a></li>)}
+  </ol>
+</Base>

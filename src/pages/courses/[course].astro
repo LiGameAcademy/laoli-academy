@@ -1,0 +1,33 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, getEntry, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+
+export async function getStaticPaths() {
+  return (await getCollection("courses", ({ data }) => !data.free)).map((course) => ({
+    params: { course: course.id },
+    props: { course },
+  }));
+}
+
+const { course } = Astro.props;
+const { Content } = await render(course);
+const english = course.data.language === "en";
+const translation = course.data.translation ? await getEntry("courses", course.data.translation) : undefined;
+---
+<Base title={course.data.title} lang={course.data.language} alternatePath={translation ? `/courses/${translation.id}/` : undefined}>
+  <nav class="action-links" aria-label={english ? "Course navigation" : "课程导航"}>
+    <a href={english ? "../../en/catalog/" : "../../catalog/"}>{english ? "← Course catalog" : "← 课程目录"}</a>
+  </nav>
+  <article data-course-intro>
+    <Image src={course.data.cover} alt="" class="project-preview" />
+    <p>{english ? "Course overview" : (course.data.external ? "平台教程 · 公开介绍" : "付费课程 · 公开介绍")}</p>
+    <h1>{course.data.title}</h1>
+    <p>{course.data.summary}</p>
+    <Content />
+    <nav class="action-links" aria-label={english ? "Course platforms" : "完整课程平台"}>
+      {!english && course.data.zsxq && <a href={course.data.zsxq}>在知识星球查看中文课程</a>}
+      {english && course.data.patreon && <a href={course.data.patreon}>View this course on Patreon</a>}
+    </nav>
+  </article>
+</Base>

@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Lesson 02: The Script Blueprint — JSON Data Structure Design · Li Game Academy</title><script>
+      try { document.documentElement.dataset.theme = localStorage.getItem("laoli-theme") || "light"; } catch {}
+    </script><style>:root{color-scheme:light;--bg: #faf9f6;--fg: #171c24;--border: #d9d9d3;--panel: #fff;--accent: #245784}:root[data-theme=dark]{color-scheme:dark;--bg: #10151c;--fg: #f1f2f4;--border: #37424e;--panel: #1a222c;--accent: #9acafa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,sans-serif}a{color:var(--accent)}button{font:inherit;cursor:pointer}.shell{width:min(1100px,calc(100% - 32px));margin-inline:auto}.bar,.bar nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap}header.bar{justify-content:space-between;padding-block:20px}footer.bar{margin-block-start:64px;padding-block:20px;border-top:1px solid var(--border)}.brand{font-weight:750;color:inherit;text-decoration:none}.hero{display:grid;isolation:isolate;position:relative;align-items:end;min-height:clamp(310px,48vw,500px);overflow:hidden;border-radius:16px;color:#fff;background:#172630}.hero img,.hero:after{position:absolute;inset:0;width:100%;height:100%}.hero img{object-fit:cover;z-index:-2}.hero:after{content:"";background:linear-gradient(transparent,#080e14eb);z-index:-1}.hero>div{padding:clamp(20px,5vw,52px)}.hero h1{font-size:clamp(1.8rem,5vw,3rem);margin:0}.button{display:inline-block;background:#fff;color:#163550;border-radius:6px;padding:8px 14px;text-decoration:none}.home-series{margin-top:36px}.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}.catalog-header{display:flex;align-items:center;justify-content:space-between;gap:12px}#course-views button{border:1px solid var(--border);background:var(--panel);color:var(--fg);padding:4px 10px;border-radius:6px}#course-views button[aria-pressed=true]{background:var(--accent);color:var(--bg)}.course-card{flex-direction:column;justify-content:start;padding:0;gap:0;overflow:hidden;text-decoration:none}.course-card img{width:100%;height:auto;aspect-ratio:16 / 9;object-fit:cover}.course-copy{display:grid;gap:4px;padding:14px 18px}.course-grid[data-view=list]{grid-template-columns:minmax(0,1fr)}.course-grid[data-view=list] .course-card{flex-direction:row;align-items:center}.course-grid[data-view=list] img{width:clamp(96px,26%,208px);flex-shrink:0}.course-card:hover strong{text-decoration:underline}.course-card span{color:var(--fg)}.action-links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-block:16px}.project-preview{display:block;max-width:100%;height:auto;border-radius:12px}.panel{display:flex;gap:12px;justify-content:space-between;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px}.series li{padding-block:5px}.reading{display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;align-items:start}aside{padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px}aside ol,aside ul{padding-left:22px}aside [aria-current]{font-weight:750;color:var(--fg)}article{min-width:0;max-width:76ch;overflow-wrap:anywhere}article h1{line-height:1.25;margin-top:0}article img{max-width:100%;height:auto;border-radius:6px}article pre{overflow:auto;padding:16px;border-radius:8px}@media(max-width:720px){.reading{grid-template-columns:minmax(0,1fr);gap:20px}}
+</style></head> <body> <header class="shell bar"> <a class="brand" href="/laoli-academy/en/">Li Game Academy</a> <nav aria-label="Main navigation"> <a href="/laoli-academy/en/catalog/">Courses</a> <a href="/laoli-academy/en/#showcase">Projects &amp; source</a> <a href="/laoli-academy/courses/dialogue-quest/" lang="zh-CN" hreflang="zh-CN">简体中文</a> <button id="theme" type="button">Toggle theme</button> </nav> </header> <main class="shell"> <p><a href="../../../courses/dialogue-quest-en/">← Dialogue and Quest Systems</a></p> <div class="reading"> <aside> <nav aria-label="Free chapters"> <strong>Free chapters</strong> <ol> <li><a href="../first-dialogue/">Lesson 01: First Dialogue — Goodbye to Hardcoded Nightmares</a></li><li><a href="../json-blueprint/" aria-current="page">Lesson 02: The Script Blueprint — JSON Data Structure Design</a></li> </ol> </nav> <details> <summary>On this page</summary> <ul><li><a href="#problem-and-observable-goal">Problem and Observable Goal</a></li><li><a href="#lesson-goals">Lesson Goals</a></li><li><a href="#step-1-data-driven-design">Step 1: Data-Driven Design</a></li><li><a href="#step-2-why-json">Step 2: Why JSON?</a></li><li><a href="#step-3-design-the-script-structure">Step 3: Design the Script Structure</a></li><li><a href="#step-4-full-schema-reference">Step 4: Full Schema (Reference)</a></li><li><a href="#step-5-design-principles">Step 5: Design Principles</a></li><li><a href="#step-6-hands-on">Step 6: Hands-On</a></li><li><a href="#exercise-and-completion-check">Exercise and Completion Check</a></li><li><a href="#lesson-summary">Lesson Summary</a></li><li><a href="#study-questions">Study Questions</a></li><li><a href="#further-reading">Further Reading</a></li></ul> </details> </aside> <article> <h1>Lesson 02: The Script Blueprint — JSON Data Structure Design</h1> <h2 id="problem-and-observable-goal">Problem and Observable Goal</h2>
+<p><strong>Problem:</strong> Hardcoded text cannot express a reusable dialogue graph.</p>
+<p><strong>By the end:</strong> Identify text, choices, and next-node IDs in one JSON file.</p>
+<h2 id="lesson-goals">Lesson Goals</h2>
+<p>Internalize <strong>data-driven design</strong> and lock in the system’s <strong>data contract</strong>—the JSON shape that every later feature will build on.</p>
+<hr>
+<h2 id="step-1-data-driven-design">Step 1: Data-Driven Design</h2>
+<h3 id="11-definition">1.1 Definition</h3>
+<p><strong>Data-driven design</strong> means: volatile content (dialogue, stats, level config) lives outside code. Code loads and interprets; data drives behavior.</p>
+<h3 id="12-why-it-matters">1.2 Why It Matters</h3>
+<p>Lesson 01 problems:</p>
+<ul>
+<li>Hardcoded strings</li>
+<li>Writers blocked on programmers</li>
+<li>Features require core rewrites</li>
+</ul>
+<p>Data-driven wins:</p>
+<ul>
+<li>Edit JSON without recompiling</li>
+<li>Parallel work for narrative and engineering</li>
+<li>Extend via schema, not spaghetti</li>
+<li>Clean git history for content vs code</li>
+</ul>
+<hr>
+<h2 id="step-2-why-json">Step 2: Why JSON?</h2>
+<p>We store scripts in <strong>JSON</strong>.</p>
+<h3 id="21-strengths">2.1 Strengths</h3>
+<ol>
+<li>Human-readable</li>
+<li>Tree-shaped—fits branching dialogue</li>
+<li>Godot’s <code>JSON</code> API is first-class</li>
+<li>Editor tooling (VS Code validation, highlighting)</li>
+</ol>
+<h3 id="22-alternatives">2.2 Alternatives</h3>
+<ul>
+<li><strong>Resource (.tres)</strong> — typed, editor-friendly, weak for bulk text</li>
+<li><strong>CSV</strong> — great for tables, poor for nesting</li>
+<li><strong>JSON</strong> — best balance for narrative graphs</li>
+</ul>
+<hr>
+<h2 id="step-3-design-the-script-structure">Step 3: Design the Script Structure</h2>
+<h3 id="31-minimal-node">3.1 Minimal Node</h3>
+<p>Create <code>data/dialogues/dialogue.json</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "village_chief_start"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "character"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Village Chief"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Young traveler, you made it. The forest east of the village has been restless—can you investigate?"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "next_node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"END"</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="32-field-meanings">3.2 Field Meanings</h3>
+<ol>
+<li>Root object → Godot <code>Dictionary</code></li>
+<li><strong>Dialogue ID</strong> (<code>village_chief_start</code>) — stable node name, not array index</li>
+<li><strong>character</strong> — speaker name</li>
+<li><strong>text</strong> — line body</li>
+<li><strong>next_node</strong> — next ID; <code>END</code> closes the conversation</li>
+</ol>
+<h3 id="33-branching">3.3 Branching</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "village_chief_start"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "character"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Village Chief"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Young traveler, you made it. The forest east of the village has been restless—can you investigate?"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "choices"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#79B8FF">        "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"I'll go now."</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "next_node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"accept_quest_forest"</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#79B8FF">        "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"I need more preparation."</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "next_node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"refuse_quest_forest"</span></span>
+<span class="line"><span style="color:#E1E4E8">      }</span></span>
+<span class="line"><span style="color:#E1E4E8">    ]</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "accept_quest_forest"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "character"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Village Chief"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Excellent! Take this rations—travel safe."</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "next_node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"END"</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "refuse_quest_forest"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "character"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Village Chief"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Then prepare well—the village is counting on you."</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "next_node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"END"</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p><strong><code>choices</code></strong> (optional array): each entry has <code>text</code> and <code>next_node</code>.</p>
+<p><strong>Rules:</strong> if <code>choices</code> exist, skip <code>next_node</code> on that node; linear nodes use <code>next_node</code>.</p>
+<hr>
+<h2 id="step-4-full-schema-reference">Step 4: Full Schema (Reference)</h2>
+<p>Aligned with the course project <code>godot_simple_arpg_demo</code>.</p>
+<h3 id="41-dialogue-node">4.1 Dialogue Node</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "node_id"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "character"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"name or localization key"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"line or localization key"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "choices"</span><span style="color:#E1E4E8">: [ ],</span></span>
+<span class="line"><span style="color:#79B8FF">    "next_node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"next_id or END"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "condition"</span><span style="color:#E1E4E8">: { },</span></span>
+<span class="line"><span style="color:#79B8FF">    "action"</span><span style="color:#E1E4E8">: { },</span></span>
+<span class="line"><span style="color:#79B8FF">    "actions"</span><span style="color:#E1E4E8">: [ ]</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="42-choice">4.2 Choice</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"label or key"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "next_node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"next_id"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "condition"</span><span style="color:#E1E4E8">: { },</span></span>
+<span class="line"><span style="color:#79B8FF">  "action"</span><span style="color:#E1E4E8">: { },</span></span>
+<span class="line"><span style="color:#79B8FF">  "actions"</span><span style="color:#E1E4E8">: [ ]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="43-condition-later-lessons">4.3 Condition (later lessons)</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "quest_status"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"quest_id"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "status"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"can_accept|in_progress|ready_to_turn_in"</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>Or:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "has_item"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"item_id"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "amount"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">1</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="44-action-later-lessons">4.4 Action (later lessons)</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"give_item|start_quest|affinity_change|give_reward"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"item_or_quest_id"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "amount"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "npc_id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"npc_id"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "value"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">10</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h3 id="45-production-example-localization-keys">4.5 Production Example (Localization Keys)</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "village_chief_start"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "character"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"CHARACTER_VILLAGE_CHIEF"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"VILLAGE_CHIEF_GREETING"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "choices"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#79B8FF">        "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"VILLAGE_CHIEF_CHOICE_ACCEPT"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "next_node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"accept_quest_forest"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "condition"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">          "quest_status"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">            "id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"chief_forest_quest"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">            "status"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"can_accept"</span></span>
+<span class="line"><span style="color:#E1E4E8">          }</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#79B8FF">        "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"VILLAGE_CHIEF_CHOICE_REFUSE"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "next_node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"refuse_quest_forest"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">        "condition"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">          "quest_status"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">            "id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"chief_forest_quest"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">            "status"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"can_accept"</span></span>
+<span class="line"><span style="color:#E1E4E8">          }</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">      }</span></span>
+<span class="line"><span style="color:#E1E4E8">    ]</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "accept_quest_forest"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "character"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"CHARACTER_VILLAGE_CHIEF"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "text"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"VILLAGE_CHIEF_ACCEPT_REPLY"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "actions"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">      { </span><span style="color:#79B8FF">"type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"give_item"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"bread"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"amount"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">      { </span><span style="color:#79B8FF">"type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"start_quest"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"id"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"chief_forest_quest"</span><span style="color:#E1E4E8"> }</span></span>
+<span class="line"><span style="color:#E1E4E8">    ],</span></span>
+<span class="line"><span style="color:#79B8FF">    "next_node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"END"</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>Ship builds use keys instead of raw prose; localization chapters cover the pipeline.</p>
+<hr>
+<h2 id="step-5-design-principles">Step 5: Design Principles</h2>
+<h3 id="51-unique-ids">5.1 Unique IDs</h3>
+<p>Good: <code>village_chief_start</code>, <code>accept_quest_forest</code>, <code>boss_battle_intro</code>. Bad: <code>node1</code>, <code>dialogue</code>, <code>test</code>.</p>
+<h3 id="52-extensibility">5.2 Extensibility</h3>
+<ul>
+<li>Conditions via <code>condition</code></li>
+<li>Actions via <code>action</code> / <code>actions</code></li>
+<li>Localization via keys</li>
+<li>Optional <code>metadata</code> for extras</li>
+</ul>
+<h3 id="53-backward-compatibility">5.3 Backward Compatibility</h3>
+<p>New fields optional; missing fields get sane defaults; old files keep working.</p>
+<hr>
+<h2 id="step-6-hands-on">Step 6: Hands-On</h2>
+<ol>
+<li>Create <code>data/dialogues/</code></li>
+<li>Add <code>dialogue.json</code></li>
+<li>Start from the branching sample and rewrite for your game</li>
+<li>Validate JSON in VS Code ( brackets, quotes, trailing commas )</li>
+<li>Sanity-check graph: every <code>next_node</code> resolves; no accidental cycles</li>
+</ol>
+<hr>
+<h2 id="exercise-and-completion-check">Exercise and Completion Check</h2>
+<p>Add a two-choice node to the sample JSON and trace each destination on paper.</p>
+<p><strong>Done when:</strong> The JSON parses and each non-END destination exists in the file.</p>
+<h2 id="lesson-summary">Lesson Summary</h2>
+<ul>
+<li>Data-driven separation of content and code</li>
+<li>Dialogue node schema and branching rules</li>
+<li>Principles: IDs, extension points, compatibility</li>
+</ul>
+<h3 id="schema-quick-reference">Schema Quick Reference</h3>
+<ul>
+<li><strong>character</strong> (string, required) — speaker or key</li>
+<li><strong>text</strong> (string, required) — line or key</li>
+<li><strong>choices</strong> (array, optional)</li>
+<li><strong>next_node</strong> (string) — required when no <code>choices</code></li>
+<li><strong>condition</strong>, <strong>action</strong>, <strong>actions</strong> (optional)</li>
+</ul>
+<h3 id="next-lesson">Next Lesson</h3>
+<p><em>Engine Core — DialogueManager Singleton:</em> Autoload, load JSON, parse nodes.</p>
+<h2 id="study-questions">Study Questions</h2>
+<ol>
+<li>Why JSON instead of arrays in GDScript?</li>
+<li>How would you structure data for multiple languages?</li>
+<li>How do you organize 1000 nodes across files?</li>
+<li>How would you validate broken <code>next_node</code> links?</li>
+</ol>
+<h2 id="further-reading">Further Reading</h2>
+<ul>
+<li><a href="https://www.json.org/">JSON specification</a></li>
+<li><a href="https://docs.godotengine.org/en/stable/classes/class_json.html">Godot JSON class</a></li>
+<li><a href="https://gameprogrammingpatterns.com/data-locality.html">Data locality (Game Programming Patterns)</a></li>
+</ul>
+<hr>
+<p>This is Lao Li Game Academy — see you in the next lesson!</p>
+<p><a href="https://github.com/LiGameAcademy">GitHub</a> | <a href="https://godot-li.itch.io/">itch.io</a> | <a href="https://www.youtube.com/@user-oldLee">YouTube</a> | <a href="https://discord.gg/V5nuzC2BcJ">Discord</a> | <a href="https://www.patreon.com/cw/LiGameAcademy">Patreon</a></p>
+<p>Optional Chinese community: <a href="https://wx.zsxq.com/group/28885154818841">Knowledge Planet</a></p> <p><a href="https://www.patreon.com/LiGameAcademy/posts/lesson-02-script-171773862">Original post on Patreon</a></p> <nav class="action-links" aria-label="Previous and next chapters"> <a href="../first-dialogue/">← Lesson 01: First Dialogue — Goodbye to Hardcoded Nightmares</a>  <a href="https://www.patreon.com/LiGameAcademy/posts/lesson-03-engine-171793867">Lesson 03 on Patreon (paid) →</a> </nav> </article> </div> </main> <footer class="shell bar"> <a href="https://space.bilibili.com/8618918">Bilibili</a> <a href="https://github.com/LiGameAcademy">GitHub</a> <a href="https://godot-li.itch.io/">itch.io</a> <a href="https://www.patreon.com/cw/LiGameAcademy">Patreon</a> </footer> <script type="module">document.querySelector("#theme")?.addEventListener("click",()=>{const e=document.documentElement,t=e.dataset.theme==="dark"?"light":"dark";e.dataset.theme=t;try{localStorage.setItem("laoli-theme",t)}catch{}});</script> </body> </html>

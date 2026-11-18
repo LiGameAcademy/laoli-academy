@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Lesson 01: First Dialogue — Goodbye to Hardcoded Nightmares · Li Game Academy</title><script>
+      try { document.documentElement.dataset.theme = localStorage.getItem("laoli-theme") || "light"; } catch {}
+    </script><style>:root{color-scheme:light;--bg: #faf9f6;--fg: #171c24;--border: #d9d9d3;--panel: #fff;--accent: #245784}:root[data-theme=dark]{color-scheme:dark;--bg: #10151c;--fg: #f1f2f4;--border: #37424e;--panel: #1a222c;--accent: #9acafa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,sans-serif}a{color:var(--accent)}button{font:inherit;cursor:pointer}.shell{width:min(1100px,calc(100% - 32px));margin-inline:auto}.bar,.bar nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap}header.bar{justify-content:space-between;padding-block:20px}footer.bar{margin-block-start:64px;padding-block:20px;border-top:1px solid var(--border)}.brand{font-weight:750;color:inherit;text-decoration:none}.hero{display:grid;isolation:isolate;position:relative;align-items:end;min-height:clamp(310px,48vw,500px);overflow:hidden;border-radius:16px;color:#fff;background:#172630}.hero img,.hero:after{position:absolute;inset:0;width:100%;height:100%}.hero img{object-fit:cover;z-index:-2}.hero:after{content:"";background:linear-gradient(transparent,#080e14eb);z-index:-1}.hero>div{padding:clamp(20px,5vw,52px)}.hero h1{font-size:clamp(1.8rem,5vw,3rem);margin:0}.button{display:inline-block;background:#fff;color:#163550;border-radius:6px;padding:8px 14px;text-decoration:none}.home-series{margin-top:36px}.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}.catalog-header{display:flex;align-items:center;justify-content:space-between;gap:12px}#course-views button{border:1px solid var(--border);background:var(--panel);color:var(--fg);padding:4px 10px;border-radius:6px}#course-views button[aria-pressed=true]{background:var(--accent);color:var(--bg)}.course-card{flex-direction:column;justify-content:start;padding:0;gap:0;overflow:hidden;text-decoration:none}.course-card img{width:100%;height:auto;aspect-ratio:16 / 9;object-fit:cover}.course-copy{display:grid;gap:4px;padding:14px 18px}.course-grid[data-view=list]{grid-template-columns:minmax(0,1fr)}.course-grid[data-view=list] .course-card{flex-direction:row;align-items:center}.course-grid[data-view=list] img{width:clamp(96px,26%,208px);flex-shrink:0}.course-card:hover strong{text-decoration:underline}.course-card span{color:var(--fg)}.action-links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-block:16px}.project-preview{display:block;max-width:100%;height:auto;border-radius:12px}.panel{display:flex;gap:12px;justify-content:space-between;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px}.series li{padding-block:5px}.reading{display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;align-items:start}aside{padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px}aside ol,aside ul{padding-left:22px}aside [aria-current]{font-weight:750;color:var(--fg)}article{min-width:0;max-width:76ch;overflow-wrap:anywhere}article h1{line-height:1.25;margin-top:0}article img{max-width:100%;height:auto;border-radius:6px}article pre{overflow:auto;padding:16px;border-radius:8px}@media(max-width:720px){.reading{grid-template-columns:minmax(0,1fr);gap:20px}}
+</style></head> <body> <header class="shell bar"> <a class="brand" href="/laoli-academy/en/">Li Game Academy</a> <nav aria-label="Main navigation"> <a href="/laoli-academy/en/catalog/">Courses</a> <a href="/laoli-academy/en/#showcase">Projects &amp; source</a> <a href="/laoli-academy/courses/dialogue-quest/" lang="zh-CN" hreflang="zh-CN">简体中文</a> <button id="theme" type="button">Toggle theme</button> </nav> </header> <main class="shell"> <p><a href="../../../courses/dialogue-quest-en/">← Dialogue and Quest Systems</a></p> <div class="reading"> <aside> <nav aria-label="Free chapters"> <strong>Free chapters</strong> <ol> <li><a href="../first-dialogue/" aria-current="page">Lesson 01: First Dialogue — Goodbye to Hardcoded Nightmares</a></li><li><a href="../json-blueprint/">Lesson 02: The Script Blueprint — JSON Data Structure Design</a></li> </ol> </nav> <details> <summary>On this page</summary> <ul><li><a href="#problem-and-observable-goal">Problem and Observable Goal</a></li><li><a href="#lesson-goals">Lesson Goals</a></li><li><a href="#step-1-build-the-simplest-stage">Step 1: Build the Simplest Stage</a></li><li><a href="#step-2-a-one-off-dialogue-script">Step 2: A One-Off Dialogue Script</a></li><li><a href="#step-3-judge-the-code-we-just-wrote">Step 3: Judge the Code We Just Wrote</a></li><li><a href="#step-4-architecture-mindset">Step 4: Architecture Mindset</a></li><li><a href="#exercise-and-completion-check">Exercise and Completion Check</a></li><li><a href="#lesson-summary">Lesson Summary</a></li><li><a href="#study-questions">Study Questions</a></li></ul> </details> </aside> <article> <h1>Lesson 01: First Dialogue — Goodbye to Hardcoded Nightmares</h1> <h2 id="problem-and-observable-goal">Problem and Observable Goal</h2>
+<p><strong>Problem:</strong> A character has no dialogue yet.</p>
+<p><strong>By the end:</strong> Show three lines and reset after the last confirmation.</p>
+<h2 id="lesson-goals">Lesson Goals</h2>
+<p>In about five minutes, you will get a game character talking. We use the most direct path first—then we tear it down on purpose and ask the question that matters: <strong>why do we need something better?</strong></p>
+<hr>
+<h2 id="step-1-build-the-simplest-stage">Step 1: Build the Simplest Stage</h2>
+<h3 id="11-create-a-basic-scene">1.1 Create a Basic Scene</h3>
+<ol>
+<li>Open Godot and create a new project (or use an existing one such as <code>godot_simple_arpg_demo</code>).</li>
+<li>Create a 2D scene with root node <code>Main</code> (or 3D if that matches your game).</li>
+<li>Add a <code>Sprite2D</code> (2D) or <code>MeshInstance3D</code> (3D) as the player. Name it <code>Player</code>.</li>
+<li>Under <code>Player</code>, add a <code>Label</code> (2D) or <code>Label3D</code> (3D) for dialogue text. Name it <code>DialogueLabel</code>.</li>
+</ol>
+<p><strong>Scene tree:</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>- Main (Node2D or Node3D)</span></span>
+<span class="line"><span>  - Player (Sprite2D or MeshInstance3D)</span></span>
+<span class="line"><span>    - DialogueLabel (Label or Label3D)</span></span></code></pre>
+<h3 id="12-configure-the-label">1.2 Configure the Label</h3>
+<p><strong>2D:</strong> Select the Label. In the Inspector:</p>
+<ul>
+<li><strong>Text:</strong> leave empty (set in code)</li>
+<li><strong>Horizontal Alignment:</strong> Center</li>
+<li><strong>Vertical Alignment:</strong> Center</li>
+<li><strong>Autowrap Mode:</strong> Word Smart (optional, for long lines)</li>
+</ul>
+<p><strong>3D:</strong> Select Label3D:</p>
+<ul>
+<li><strong>Text:</strong> empty</li>
+<li><strong>Billboard:</strong> Enabled</li>
+<li><strong>No Depth Test:</strong> on (reduces occlusion issues)</li>
+</ul>
+<hr>
+<h2 id="step-2-a-one-off-dialogue-script">Step 2: A One-Off Dialogue Script</h2>
+<p>Attach a new script to <code>Player</code>, name it <code>player.gd</code>, and paste:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#6A737D"># player.gd</span></span>
+<span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> Sprite2D</span><span style="color:#6A737D">  # For 3D, use MeshInstance3D and change the label type to Label3D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 1. Hardcode all lines in an array</span></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> dialogue_lines: </span><span style="color:#B392F0">Array</span><span style="color:#E1E4E8">[</span><span style="color:#B392F0">String</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span></span>
+<span class="line"><span style="color:#9ECBFF">	"Hello, adventurer."</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">	"This world needs your help."</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">	"Ready to set out?"</span></span>
+<span class="line"><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 2. Track which line we are on</span></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> current_line_index: </span><span style="color:#B392F0">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 0</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> dialogue_label: </span><span style="color:#B392F0">Label</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">DialogueLabel</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _ready</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	dialogue_label.</span><span style="color:#B392F0">hide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 3. Listen for global input</span></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _unhandled_input</span><span style="color:#E1E4E8">(event: </span><span style="color:#B392F0">InputEvent</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> event.</span><span style="color:#B392F0">is_action_pressed</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"ui_accept"</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#F97583"> not</span><span style="color:#E1E4E8"> dialogue_label.visible:</span></span>
+<span class="line"><span style="color:#E1E4E8">			dialogue_label.</span><span style="color:#B392F0">show</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">			dialogue_label.text </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> dialogue_lines[current_line_index]</span></span>
+<span class="line"><span style="color:#E1E4E8">			current_line_index </span><span style="color:#F97583">+=</span><span style="color:#79B8FF"> 1</span></span>
+<span class="line"><span style="color:#F97583">			return</span></span>
+<span class="line"><span style="color:#E1E4E8">		</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#E1E4E8"> current_line_index </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> dialogue_lines.</span><span style="color:#B392F0">size</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#E1E4E8">			dialogue_label.text </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> dialogue_lines[current_line_index]</span></span>
+<span class="line"><span style="color:#E1E4E8">			current_line_index </span><span style="color:#F97583">+=</span><span style="color:#79B8FF"> 1</span></span>
+<span class="line"><span style="color:#F97583">		else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">			dialogue_label.</span><span style="color:#B392F0">hide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">			current_line_index </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span></span></code></pre>
+<h3 id="21-code-walkthrough">2.1 Code Walkthrough</h3>
+<ol>
+<li><strong><code>dialogue_lines</code></strong> — stores all text. Easy to read, but this is where pain starts at scale.</li>
+<li><strong><code>current_line_index</code></strong> — advances each time the player confirms.</li>
+<li><strong><code>@onready var dialogue_label</code></strong> — Godot initializes this reference when the node becomes ready, before calling its <code>_ready()</code> method.</li>
+<li><strong><code>_unhandled_input()</code></strong> — <code>ui_accept</code> is the default confirm action (Enter / Space).</li>
+<li><strong>Flow:</strong> first press shows line 1; later presses advance; after the last line, hide and reset.</li>
+</ol>
+<h3 id="22-run-it">2.2 Run It</h3>
+<p>Press F5. Hit Enter or Space. Lines appear one by one. It works—and that is exactly the trap.</p>
+<hr>
+<h2 id="step-3-judge-the-code-we-just-wrote">Step 3: Judge the Code We Just Wrote</h2>
+<p>Before celebrating, imagine hundreds or thousands of lines, many NPCs, and player choices. What breaks?</p>
+<p>This section is the core of the lesson: <strong>name the problems</strong>.</p>
+<h3 id="31-hard-to-maintain">3.1 Hard to Maintain</h3>
+<p><strong>Scenario:</strong> 500 lines in the array; you need to fix a typo on line 237.</p>
+<p><strong>Reality:</strong> you hunt through logic to find one string.</p>
+<p><strong>Cost:</strong> every copy change touches code, re-run risk, and merge noise.</p>
+<h3 id="32-not-reusable">3.2 Not Reusable</h3>
+<p><strong>Scenario:</strong> another NPC needs the same lines.</p>
+<p><strong>Reality:</strong> copy-paste.</p>
+<p><strong>Cost:</strong> DRY violations—fix in one place, forget another, ship a bug.</p>
+<h3 id="33-no-branching">3.3 No Branching</h3>
+<p><strong>Scenario:</strong> after “Ready to set out?”, offer “I’m ready” vs “I need more prep.”</p>
+<p><strong>Reality:</strong> nested <code>if/else</code> spaghetti.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">if</span><span style="color:#E1E4E8"> current_line_index </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> player_choice </span><span style="color:#F97583">==</span><span style="color:#9ECBFF"> "ready"</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">		dialogue_lines </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#9ECBFF">"Great, let's go!"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"..."</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#F97583">	else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#B392F0"> player_has_item</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"sword"</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">			dialogue_lines </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#9ECBFF">"Go prepare first."</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"..."</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#F97583">		else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">			dialogue_lines </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#9ECBFF">"You need a sword."</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"..."</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#6A737D"># ... more nested if-else ...</span></span></code></pre>
+<p><strong>Cost:</strong> in three months, you will not trust this file.</p>
+<h3 id="34-tight-coupling-of-data-and-logic">3.4 Tight Coupling of Data and Logic</h3>
+<p><strong>Root issue:</strong> story text and display logic live in one script.</p>
+<p>Requiring writers to edit gameplay scripts creates unnecessary friction. Content and behavior cannot version cleanly. Production slows down.</p>
+<hr>
+<h2 id="step-4-architecture-mindset">Step 4: Architecture Mindset</h2>
+<p>What we built is a <strong>fragile prototype</strong>. Fine for a five-minute test; wrong as the foundation of a narrative engine.</p>
+<h3 id="41-what-good-looks-like">4.1 What Good Looks Like</h3>
+<ol>
+<li><strong>Separate data from logic</strong> — text in external files; code reads and presents.</li>
+<li><strong>Extensible</strong> — branches, conditions, actions without rewriting the core.</li>
+<li><strong>Maintainable</strong> — non-programmers can author content.</li>
+<li><strong>Reusable</strong> — one system for every NPC and scene.</li>
+</ol>
+<h3 id="42-where-we-go-next">4.2 Where We Go Next</h3>
+<p>Next lesson we replace this design with <strong>data-driven</strong> structure: JSON for content, code for interpretation, config for branches, conditions, and actions.</p>
+<hr>
+<h2 id="exercise-and-completion-check">Exercise and Completion Check</h2>
+<p>Replace the three lines with your own introduction, then play through it twice.</p>
+<p><strong>Done when:</strong> Both runs display the same three lines in order and hide the label afterward.</p>
+<h2 id="lesson-summary">Lesson Summary</h2>
+<h3 id="takeaways">Takeaways</h3>
+<ul>
+<li>Hardcoding is valid for fast prototypes.</li>
+<li>You can spot architectural limits before they ship.</li>
+<li>Data/logic separation is non-negotiable for real narrative tools.</li>
+</ul>
+<h3 id="terms">Terms</h3>
+<ul>
+<li><strong>Hardcoding</strong> — data embedded in source.</li>
+<li><strong>Coupling</strong> — how tightly modules depend on each other.</li>
+<li><strong>Data-driven</strong> — behavior driven by external data.</li>
+</ul>
+<h3 id="next-lesson">Next Lesson</h3>
+<p><em>The Script Blueprint — JSON Data Structure Design:</em> dialogue JSON schema, data contract, room for future features.</p>
+<h2 id="study-questions">Study Questions</h2>
+<ol>
+<li>Where else in your project is content still hardcoded?</li>
+<li>How would you shape dialogue data if you designed from scratch?</li>
+<li>What are the tradeoffs of data-driven design?</li>
+</ol>
+<hr>
+<p>This is Lao Li Game Academy — see you in the next lesson!</p>
+<p><a href="https://github.com/LiGameAcademy">GitHub</a> | <a href="https://godot-li.itch.io/">itch.io</a> | <a href="https://www.youtube.com/@user-oldLee">YouTube</a> | <a href="https://discord.gg/V5nuzC2BcJ">Discord</a> | <a href="https://www.patreon.com/cw/LiGameAcademy">Patreon</a></p>
+<p>Optional Chinese community: <a href="https://wx.zsxq.com/group/28885154818841">Knowledge Planet</a></p> <p><a href="https://www.patreon.com/LiGameAcademy/posts/lesson-01-first-171773747">Original post on Patreon</a></p> <nav class="action-links" aria-label="Previous and next chapters">  <a href="../json-blueprint/">Lesson 02: The Script Blueprint — JSON Data Structure Design →</a>  </nav> </article> </div> </main> <footer class="shell bar"> <a href="https://space.bilibili.com/8618918">Bilibili</a> <a href="https://github.com/LiGameAcademy">GitHub</a> <a href="https://godot-li.itch.io/">itch.io</a> <a href="https://www.patreon.com/cw/LiGameAcademy">Patreon</a> </footer> <script type="module">document.querySelector("#theme")?.addEventListener("click",()=>{const e=document.documentElement,t=e.dataset.theme==="dark"?"light":"dark";e.dataset.theme=t;try{localStorage.setItem("laoli-theme",t)}catch{}});</script> </body> </html>

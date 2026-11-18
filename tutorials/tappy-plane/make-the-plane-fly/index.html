@@ -1,0 +1,219 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Part 2 — Make the plane fly · Li Game Academy</title><script>
+      try { document.documentElement.dataset.theme = localStorage.getItem("laoli-theme") || "light"; } catch {}
+    </script><style>:root{color-scheme:light;--bg: #faf9f6;--fg: #171c24;--border: #d9d9d3;--panel: #fff;--accent: #245784}:root[data-theme=dark]{color-scheme:dark;--bg: #10151c;--fg: #f1f2f4;--border: #37424e;--panel: #1a222c;--accent: #9acafa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,sans-serif}a{color:var(--accent)}button{font:inherit;cursor:pointer}.shell{width:min(1100px,calc(100% - 32px));margin-inline:auto}.bar,.bar nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap}header.bar{justify-content:space-between;padding-block:20px}footer.bar{margin-block-start:64px;padding-block:20px;border-top:1px solid var(--border)}.brand{font-weight:750;color:inherit;text-decoration:none}.hero{display:grid;isolation:isolate;position:relative;align-items:end;min-height:clamp(310px,48vw,500px);overflow:hidden;border-radius:16px;color:#fff;background:#172630}.hero img,.hero:after{position:absolute;inset:0;width:100%;height:100%}.hero img{object-fit:cover;z-index:-2}.hero:after{content:"";background:linear-gradient(transparent,#080e14eb);z-index:-1}.hero>div{padding:clamp(20px,5vw,52px)}.hero h1{font-size:clamp(1.8rem,5vw,3rem);margin:0}.button{display:inline-block;background:#fff;color:#163550;border-radius:6px;padding:8px 14px;text-decoration:none}.home-series{margin-top:36px}.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}.catalog-header{display:flex;align-items:center;justify-content:space-between;gap:12px}#course-views button{border:1px solid var(--border);background:var(--panel);color:var(--fg);padding:4px 10px;border-radius:6px}#course-views button[aria-pressed=true]{background:var(--accent);color:var(--bg)}.course-card{flex-direction:column;justify-content:start;padding:0;gap:0;overflow:hidden;text-decoration:none}.course-card img{width:100%;height:auto;aspect-ratio:16 / 9;object-fit:cover}.course-copy{display:grid;gap:4px;padding:14px 18px}.course-grid[data-view=list]{grid-template-columns:minmax(0,1fr)}.course-grid[data-view=list] .course-card{flex-direction:row;align-items:center}.course-grid[data-view=list] img{width:clamp(96px,26%,208px);flex-shrink:0}.course-card:hover strong{text-decoration:underline}.course-card span{color:var(--fg)}.action-links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-block:16px}.project-preview{display:block;max-width:100%;height:auto;border-radius:12px}.panel{display:flex;gap:12px;justify-content:space-between;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px}.series li{padding-block:5px}.reading{display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;align-items:start}aside{padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px}aside ol,aside ul{padding-left:22px}aside [aria-current]{font-weight:750;color:var(--fg)}article{min-width:0;max-width:76ch;overflow-wrap:anywhere}article h1{line-height:1.25;margin-top:0}article img{max-width:100%;height:auto;border-radius:6px}article pre{overflow:auto;padding:16px;border-radius:8px}@media(max-width:720px){.reading{grid-template-columns:minmax(0,1fr);gap:20px}}
+</style></head> <body> <header class="shell bar"> <a class="brand" href="/laoli-academy/en/">Li Game Academy</a> <nav aria-label="Main navigation"> <a href="/laoli-academy/en/catalog/">Courses</a> <a href="/laoli-academy/en/#showcase">Projects &amp; source</a> <a href="/laoli-academy/courses/tappy-plane/" lang="zh-CN" hreflang="zh-CN">简体中文</a> <button id="theme" type="button">Toggle theme</button> </nav> </header> <main class="shell"> <p><a href="../../../courses/tappy-plane-en/">← Tappy Plane course overview</a></p> <article> <h1>Part 2 — Make the plane fly</h1> <blockquote>
+<p>Written and checked on <strong>Godot 4.7</strong>. The older 4.4 wording still works on 4.7. If a sentence disagrees with the shipped project <code>godot_tappy_plane/</code>, trust the project files.</p>
+</blockquote>
+<p>Last lesson you put a plane on screen. Now Space makes it climb, releasing Space lets it fall, and rocks enter from the right. At the end you will have a playable prototype.</p>
+<p><img  src="/laoli-academy/_astro/02-playing.CwGkkSHg_ZRq87z.png" alt="Part 2 running: plane and rocks entering from the right" loading="lazy" decoding="async" fetchpriority="auto" width="1152" height="648"></p>
+<p>Keep using the Part 1 practice project, or start from the <code>01-start</code> zip. This lesson ends at <code>02-flight</code>. Do not drag both projects into the same Godot project. Code blocks below are <strong>full files</strong>. Replace the matching path. The text around them explains why the lines exist.</p>
+<p><strong>Series:</strong> <a href="../../../courses/tappy-plane-en/">Tappy Plane course overview</a></p>
+<h2 id="1-give-the-game-a-flap-up-action">1. Give the game a “flap up” action</h2>
+<p>Open <strong>Project → Project Settings → Input Map</strong>. Under Add New Action, type <code>flap</code> and add it. Expand it. Use the plus buttons to add <strong>Left Mouse Button</strong> and <strong>Physical Space</strong>. The action name’s case must match the code.</p>
+<p><img  src="/laoli-academy/_astro/02-input-map.C2Qmuz-T_1Cm7es.png" alt="flap input map: left mouse and Space" loading="lazy" decoding="async" fetchpriority="auto" width="2050" height="1184"></p>
+<p><code>flap</code> is the game action name. Code only cares that the player wants to go up. You do not write mouse and keyboard twice. To change keys later, edit the Input Map.</p>
+<p>Then in <strong>Project Settings → Layer Names → 2D Physics</strong>, name layer 1 <code>player</code> and layer 2 <code>rock</code>. Names are for you. Detection uses the checkboxes on those layers.</p>
+<h2 id="2-keep-design-numbers-apart-from-live-data">2. Keep design numbers apart from live data</h2>
+<p>Gravity, flap strength, and rock speed are <strong>design</strong> numbers. Where the plane is going and what the score is are <strong>live</strong> data. A small Resource stores the first group so values are not copied into many scripts.</p>
+<p>In FileSystem create <code>src/config</code>. Right-click, New Script, path <code>src/config/game_config.gd</code>, inherits <code>Resource</code>. Replace the template with:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">class_name</span><span style="color:#B392F0"> GameConfig</span></span>
+<span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> Resource</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">## Shared read-only config. Speed, score, and other live data live elsewhere.</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> gravity: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 400.0</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> flap_power: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 300.0</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> flap_velocity_limit: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 200.0</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> min_tilt: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#F97583"> -</span><span style="color:#79B8FF">45.0</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> max_tilt: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 90.0</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> rock_speed: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 200.0</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> spawn_interval: </span><span style="color:#B392F0">Vector2</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> Vector2</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1.0</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2.0</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> spawn_x: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 632.0</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> bottom_y: </span><span style="color:#B392F0">Vector2</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> Vector2</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">216.0</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">336.0</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> top_y: </span><span style="color:#B392F0">Vector2</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> Vector2</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">-</span><span style="color:#79B8FF">24.0</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">112.0</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> despawn_x: </span><span style="color:#B392F0">float</span><span style="color:#F97583"> =</span><span style="color:#F97583"> -</span><span style="color:#79B8FF">56.0</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> plane_start: </span><span style="color:#B392F0">Vector2</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> Vector2</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">72.0</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">152.0</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<p>First script in the course. You do not need every keyword memorized:</p>
+<ul>
+<li><code>extends Resource</code> — this script describes a saveable data resource.</li>
+<li><code>class_name GameConfig</code> — a type name other scripts and the editor can use.</li>
+<li><code>@export</code> — shows the field in the Inspector.</li>
+<li><code>var gravity: float = 400.0</code> — a decimal named gravity, starting at 400.</li>
+<li><code>Vector2(1.0, 2.0)</code> here stores two numbers (interval min and max). It is not always a position.</li>
+<li><code>##</code> is a doc comment. Comments do not run.</li>
+</ul>
+<p>Save. Right-click <code>src/config</code>, New Resource, search GameConfig, save as <code>default_game_config.tres</code>. Keep the defaults. If GameConfig is missing from the list, check that the script saved and has no red parse errors.</p>
+<p>The <code>.tres</code> can be shared by plane and rocks. <strong>Do not change it at runtime.</strong> Each plane keeps <code>velocity</code> on its own node. Each round keeps score on its own rules object. Shared config is not shared live state.</p>
+<h2 id="3-animation-and-flap-sound-on-the-plane">3. Animation and flap sound on the plane</h2>
+<p>Open <code>plane.tscn</code>. Change the Sprite2D to <strong>AnimatedSprite2D</strong>: right-click → Change Type. Keep the name <code>Sprite2D</code>. If old texture fields remain, confirm the type is AnimatedSprite2D.</p>
+<p>In Sprite Frames, create a new SpriteFrames. Open the animation panel at the bottom. Add <code>planeYellow1.png</code>, <code>planeYellow2.png</code>, <code>planeYellow3.png</code> in number order to the <code>default</code> animation. Speed 5 FPS, loop on, autoplay on. Set this child’s Rotation to <strong>-45 degrees</strong> to match the original art facing.</p>
+<p>Add an AudioStreamPlayer on Plane named <code>AudioFlap</code>. Stream: <code>assets/audio/sound/coin1.ogg</code>. Bus: <strong>SFX</strong>. If SFX is missing, in Project Settings set <code>audio/buses/default_bus_layout</code> to the imported <code>assets/default_bus_layout.tres</code>, then reopen the audio UI and confirm BGM and SFX exist.</p>
+<p>Final plane tree:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Plane (CharacterBody2D, plane.gd)</span></span>
+<span class="line"><span>├── Sprite2D (AnimatedSprite2D)</span></span>
+<span class="line"><span>├── CollisionShape2D (CircleShape2D, radius 45)</span></span>
+<span class="line"><span>└── AudioFlap (AudioStreamPlayer)</span></span></code></pre>
+<p>Root Scale stays <code>(0.5, 0.5)</code>. Collision Layer: only <strong>player</strong>. Collision Mask: only <strong>rock</strong>. The node is still named Sprite2D; the type is AnimatedSprite2D. Keep those two facts separate when you read the tree.</p>
+<h2 id="4-real-flight-logic">4. Real flight logic</h2>
+<p>Select the Plane root. Attach <code>src/entities/plane.gd</code>. If Part 1 left an empty <code>extends</code> script, replace the whole file:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">class_name</span><span style="color:#B392F0"> TappyPlane</span></span>
+<span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> CharacterBody2D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> config: </span><span style="color:#B392F0">GameConfig</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> audio_flap: </span><span style="color:#B392F0">AudioStreamPlayer</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">AudioFlap</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">#region Lifecycle</span></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _physics_process</span><span style="color:#E1E4E8">(delta: </span><span style="color:#B392F0">float</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	velocity.y </span><span style="color:#F97583">+=</span><span style="color:#E1E4E8"> config.gravity </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> delta</span></span>
+<span class="line"><span style="color:#E1E4E8">	rotation_degrees </span><span style="color:#F97583">=</span><span style="color:#B392F0"> clampf</span><span style="color:#E1E4E8">(velocity.y </span><span style="color:#F97583">/</span><span style="color:#E1E4E8"> config.gravity </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> config.max_tilt,</span></span>
+<span class="line"><span style="color:#E1E4E8">		config.min_tilt, config.max_tilt)</span></span>
+<span class="line"><span style="color:#B392F0">	move_and_slide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _unhandled_input</span><span style="color:#E1E4E8">(event: </span><span style="color:#B392F0">InputEvent</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> event.</span><span style="color:#B392F0">is_action_pressed</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"flap"</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">and</span><span style="color:#F97583"> not</span><span style="color:#E1E4E8"> event.</span><span style="color:#B392F0">is_echo</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#B392F0">		flap</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#F97583">#endregion</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">#region Public</span></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> flap</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	velocity.y </span><span style="color:#F97583">=</span><span style="color:#B392F0"> clampf</span><span style="color:#E1E4E8">(velocity.y </span><span style="color:#F97583">-</span><span style="color:#E1E4E8"> config.flap_power,</span></span>
+<span class="line"><span style="color:#F97583">		-</span><span style="color:#E1E4E8">config.flap_velocity_limit, config.flap_velocity_limit)</span></span>
+<span class="line"><span style="color:#E1E4E8">	audio_flap.</span><span style="color:#B392F0">play</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#F97583">#endregion</span></span></code></pre>
+<p>Save. Select Plane. Drag <code>default_game_config.tres</code> into the new <strong>Config</strong> slot. Skip this and <code>config.gravity</code> will error.</p>
+<p>Why <code>class_name TappyPlane</code> while the node is still <code>Plane</code>? Godot already has a math type named <code>Plane</code>. Your class cannot steal that name. Node names are free.</p>
+<h3 id="what-happens-in-one-physics-frame">What happens in one physics frame</h3>
+<p><code>_physics_process(delta: float)</code> is called on a fixed rhythm. <code>delta</code> is seconds since the last physics tick. <code>velocity.y += config.gravity * delta</code> grows downward speed. <code>move_and_slide()</code> moves the CharacterBody2D from that velocity. Do <strong>not</strong> multiply <code>velocity</code> by <code>delta</code> again, and do not add to <code>position</code> by hand here.</p>
+<p>On one flap, <code>flap()</code> subtracts 300 from current vertical speed, then clamps to -200…200. Y down is positive, so a smaller Y speed means climb. The clamp applies <strong>on flap only</strong>. Without a flap, gravity keeps increasing fall speed. That matches the reference project.</p>
+<p><code>rotation_degrees</code> is appearance only. Sound plays after the action is valid. Mute the sound and the plane still moves the same way.</p>
+<h3 id="why-input-lives-in-_unhandled_input">Why input lives in <code>_unhandled_input</code></h3>
+<p>It receives input the UI has not already used. In Part 3, a “New Game” button click belongs to the button. The plane should not flap from that same click. <code>event.is_echo()</code> drops extra key-repeat events while Space is held.</p>
+<p><code>@onready</code> grabs <code>AudioFlap</code> after this node (and children) are in the tree. <code>$AudioFlap</code> is a path <strong>inside this plane</strong>, not a project-wide search.</p>
+<p>You can press <strong>F6</strong> on the plane scene: it falls; keys change speed. Missing spawn point and background is normal. Stop, then build the rock.</p>
+<h2 id="5-rocks-detecting-is-not-blocking">5. Rocks: detecting is not blocking</h2>
+<p>New scene, root <strong>Area2D</strong>, name <code>Rock</code>, save as <code>src/entities/rock.tscn</code>, attach matching <code>rock.gd</code>. Use <strong>lowercase</strong> filenames (Godot habit). Paths in code must match disk <strong>exactly</strong>. Windows editor ignores case; an exported <code>.pck</code> does not. A wrong case gives “editor runs, EXE says Preload file does not exist.”</p>
+<p>Add Sprite2D, Texture <code>assets/textures/entities/rocks/rock.png</code>. Add CollisionPolygon2D. Use the polygon tool along the silhouette, close at the start. The lesson uses these seven points (you can type them in the Polygon property):</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>(9,-119), (15,-119), (26,-16), (39,55),</span></span>
+<span class="line"><span>(51,117), (-52,116), (-15,4)</span></span></code></pre>
+<p>Area2D reports overlap. It does not shove the plane like a solid wall. For <strong>this lesson</strong>, turn <strong>all</strong> Collision Layers off on Rock, check <strong>only player</strong> on Collision Mask, leave Monitoring on. The rock looks for bodies on the player layer. Do not leave Mask at 0, or overlapping pictures will never report a hit.</p>
+<blockquote>
+<p><strong>Shipped project note (<code>godot_tappy_plane</code>):</strong> after debugging, <code>rock.tscn</code> uses <code>collision_layer = 2</code> (rock) and <code>collision_mask = 0</code>, while the plane (player layer) has mask on rock. Either pairing can fire <code>body_entered</code> if one side actually watches the other. Do not leave <strong>both</strong> mask and the matching layer empty.</p>
+</blockquote>
+<p><img  src="/laoli-academy/_astro/02-editor-rock.BxOzNZBa_Z2vPaQQ.png" alt="Rock scene in the editor" loading="lazy" decoding="async" fetchpriority="auto" width="1794" height="1082"></p>
+<p>Full <code>rock.gd</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">class_name</span><span style="color:#B392F0"> Rock</span></span>
+<span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> Area2D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">signal</span><span style="color:#B392F0"> rock_entered</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> config: </span><span style="color:#B392F0">GameConfig</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _physics_process</span><span style="color:#E1E4E8">(delta: </span><span style="color:#B392F0">float</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	position.x </span><span style="color:#F97583">-=</span><span style="color:#E1E4E8"> config.rock_speed </span><span style="color:#F97583">*</span><span style="color:#E1E4E8"> delta</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> position.x </span><span style="color:#F97583">&#x3C;=</span><span style="color:#E1E4E8"> config.despawn_x:</span></span>
+<span class="line"><span style="color:#B392F0">		queue_free</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_body_entered</span><span style="color:#E1E4E8">(body: </span><span style="color:#B392F0">Node2D</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> body </span><span style="color:#F97583">is</span><span style="color:#B392F0"> TappyPlane</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">		rock_entered.</span><span style="color:#B392F0">emit</span><span style="color:#E1E4E8">()</span></span></code></pre>
+<p>Select Rock. Point Config at the same <code>default_game_config.tres</code>. In the Node signals dock, connect the Rock’s own <code>body_entered(body)</code> to <code>_on_body_entered</code> on the root. If the function already exists, pick it. Do not generate a second callback with the same name.</p>
+<p><code>signal rock_entered</code> is a notice with no arguments. <code>emit()</code> sends it. The rock only says “I hit the plane.” It does not hunt for a score label or game-over UI. <code>body is TappyPlane</code> checks that the body is our plane.</p>
+<p><code>queue_free()</code> frees a rock that left the screen at a safe time. This project does not need an object pool. At this size, clear lifetimes matter more.</p>
+<h2 id="6-organize-the-main-scene-world-vs-spawn">6. Organize the main scene: world vs spawn</h2>
+<p>Back in <code>game.tscn</code>, <strong>delete</strong> the Plane instance you placed by hand under Game. Keep the <code>plane.tscn</code> file. Code will spawn the plane. Two copies would be wrong.</p>
+<p>Restructure as below. World and Actors are Node2D. Move Background under Parallax2D. SpawnTimer sits under Game, <strong>not</strong> under Actors.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Game (Node2D, game.gd)</span></span>
+<span class="line"><span>├── World (Node2D)</span></span>
+<span class="line"><span>│   ├── Parallax2D</span></span>
+<span class="line"><span>│   │   └── Background (Sprite2D)</span></span>
+<span class="line"><span>│   └── Actors (Node2D, empty at start)</span></span>
+<span class="line"><span>├── SpawnTimer (Timer)</span></span>
+<span class="line"><span>└── AudioBgm (AudioStreamPlayer)</span></span></code></pre>
+<ul>
+<li><strong>Parallax2D</strong> — Repeat Size <code>(576, 0)</code>; Autoscroll <code>(-50, 0)</code></li>
+<li><strong>Background</strong> — Position <code>(288, 160)</code>; Scale <code>(0.72, 0.683333)</code></li>
+<li><strong>SpawnTimer</strong> — One Shot on; Autostart off</li>
+<li><strong>AudioBgm</strong> — Stream <code>assets/audio/music/Swinging Pants.ogg</code>; Autoplay on; Bus BGM; Volume −15 dB</li>
+</ul>
+<p>The Part 1 uniform static scale changes to these numbers to match the scrolling reference. Repeat width matches the scaled image width. Autoscroll is offset per second. See <a href="https://docs.godotengine.org/en/4.7/classes/class_parallax2d.html">Parallax2D</a>.</p>
+<p>Attach <code>game.gd</code> on Game. Replace the whole file. When you read a long script, start at <code>_ready()</code>, then follow the two methods it calls.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> Node2D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> PLANE_SCENE</span><span style="color:#E1E4E8">: </span><span style="color:#B392F0">PackedScene</span><span style="color:#F97583"> =</span><span style="color:#F97583"> preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://src/entities/plane.tscn"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> ROCK_SCENE</span><span style="color:#E1E4E8">: </span><span style="color:#B392F0">PackedScene</span><span style="color:#F97583"> =</span><span style="color:#F97583"> preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://src/entities/rock.tscn"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> config: </span><span style="color:#B392F0">GameConfig</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> world: </span><span style="color:#B392F0">Node2D</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">World</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> actors: </span><span style="color:#B392F0">Node2D</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">World/Actors</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> spawn_timer: </span><span style="color:#B392F0">Timer</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">SpawnTimer</span></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> plane: </span><span style="color:#B392F0">TappyPlane</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> restarting: </span><span style="color:#B392F0">bool</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> false</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _ready</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	spawn_timer.timeout.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(_on_spawn_timeout)</span></span>
+<span class="line"><span style="color:#B392F0">	_spawn_plane</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#B392F0">	_schedule_rock</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _process</span><span style="color:#E1E4E8">(_delta: </span><span style="color:#B392F0">float</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#B392F0"> is_instance_valid</span><span style="color:#E1E4E8">(plane) </span><span style="color:#F97583">and</span><span style="color:#F97583"> not</span><span style="color:#E1E4E8"> restarting:</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#E1E4E8"> plane.position.y </span><span style="color:#F97583">&#x3C;=</span><span style="color:#79B8FF"> 0.0</span><span style="color:#F97583"> or</span><span style="color:#E1E4E8"> plane.position.y </span><span style="color:#F97583">>=</span><span style="color:#B392F0"> get_viewport_rect</span><span style="color:#E1E4E8">().size.y:</span></span>
+<span class="line"><span style="color:#B392F0">			_on_hit</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_hit</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> restarting:</span></span>
+<span class="line"><span style="color:#F97583">		return</span></span>
+<span class="line"><span style="color:#E1E4E8">	restarting </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> true</span></span>
+<span class="line"><span style="color:#E1E4E8">	spawn_timer.</span><span style="color:#B392F0">stop</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#6A737D">	# Hit may arrive from a physics callback. Remove colliders later.</span></span>
+<span class="line"><span style="color:#E1E4E8">	_restart.</span><span style="color:#B392F0">call_deferred</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _restart</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#B392F0">	_clear_actors</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#B392F0">	_spawn_plane</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#B392F0">	_schedule_rock</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	restarting </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> false</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_spawn_timeout</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#B392F0">	_spawn_rock</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#B392F0">	_schedule_rock</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _spawn_plane</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	plane </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> PLANE_SCENE</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">instantiate</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">as</span><span style="color:#B392F0"> TappyPlane</span></span>
+<span class="line"><span style="color:#E1E4E8">	plane.config </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> config</span></span>
+<span class="line"><span style="color:#E1E4E8">	plane.position </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> config.plane_start</span></span>
+<span class="line"><span style="color:#E1E4E8">	actors.</span><span style="color:#B392F0">add_child</span><span style="color:#E1E4E8">(plane)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _spawn_rock</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	var</span><span style="color:#E1E4E8"> rock: </span><span style="color:#B392F0">Rock</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> ROCK_SCENE</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">instantiate</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">as</span><span style="color:#B392F0"> Rock</span></span>
+<span class="line"><span style="color:#E1E4E8">	rock.config </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> config</span></span>
+<span class="line"><span style="color:#E1E4E8">	rock.rock_entered.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(_on_hit)</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#B392F0"> randi_range</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">		rock.position </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Vector2</span><span style="color:#E1E4E8">(config.spawn_x,</span></span>
+<span class="line"><span style="color:#B392F0">			randf_range</span><span style="color:#E1E4E8">(config.bottom_y.x, config.bottom_y.y))</span></span>
+<span class="line"><span style="color:#F97583">	else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">		rock.rotation_degrees </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 180.0</span></span>
+<span class="line"><span style="color:#E1E4E8">		rock.position </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Vector2</span><span style="color:#E1E4E8">(config.spawn_x,</span></span>
+<span class="line"><span style="color:#B392F0">			randf_range</span><span style="color:#E1E4E8">(config.top_y.x, config.top_y.y))</span></span>
+<span class="line"><span style="color:#E1E4E8">	actors.</span><span style="color:#B392F0">add_child</span><span style="color:#E1E4E8">(rock)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _schedule_rock</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	spawn_timer.</span><span style="color:#B392F0">start</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">randf_range</span><span style="color:#E1E4E8">(config.spawn_interval.x, config.spawn_interval.y))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _clear_actors</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> actor: </span><span style="color:#B392F0">Node</span><span style="color:#F97583"> in</span><span style="color:#E1E4E8"> actors.</span><span style="color:#B392F0">get_children</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#E1E4E8">		actors.</span><span style="color:#B392F0">remove_child</span><span style="color:#E1E4E8">(actor)</span></span>
+<span class="line"><span style="color:#E1E4E8">		actor.</span><span style="color:#B392F0">queue_free</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	plane </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> null</span></span></code></pre>
+<p>Save. Drag <code>default_game_config.tres</code> onto Game’s Config slot too. Connect SpawnTimer <code>timeout</code> <strong>in code only</strong>. Do not also connect it in the editor.</p>
+<h3 id="spawning-is-four-steps">Spawning is four steps</h3>
+<p><code>preload()</code> gets the template. <code>instantiate()</code> makes a new node. Set position and config. <code>add_child()</code> puts it in the running scene. <code>as TappyPlane</code> / <code>as Rock</code> tell later lines the real type.</p>
+<p>A random bit chooses top or bottom. Top rocks rotate 180°. Bottom rocks stay upright. Each timer end spawns one rock, then picks a new 1–2 second wait. The timer is the only spawn gate. Do not also spawn from <code>_process()</code>.</p>
+<p>Actors only holds this round’s plane and rocks. Cleanup walks its children. You do not walk the whole tree looking for a global group.</p>
+<h3 id="why-this-lesson-auto-restarts">Why this lesson auto-restarts</h3>
+<p>There is no menu or game-over UI yet. After a hit or leaving the view, the prototype snaps back to spawn so you can test again. <code>restarting</code> blocks two notices in the same frame from restarting twice. <code>call_deferred()</code> waits until physics is not mid-callback before freeing nodes.</p>
+<p>This is <strong>stage</strong> behavior. Part 3 replaces it with a results screen and Retry. It is not a missing final feature.</p>
+<h2 id="7-play-the-whole-loop-before-you-continue">7. Play the whole loop before you continue</h2>
+<p>Press <strong>F5</strong>, not F6 on <code>rock.tscn</code>. First do nothing: watch the plane fall and restart. Then hold height with Space. Confirm rocks enter from the right. <strong>Debug → Visible Collision Shapes</strong> checks overlap. Turn that off before screenshot polish.</p>
+<p>If the plane ignores input, check the <code>flap</code> spelling and that the game window is focused. If Config errors on run, check the Config slot on all three scene roots. If pictures overlap but nothing restarts, check Rock Mask and the <code>body_entered</code> connection.</p>
+<p>Close the editor and reopen the project to confirm saves. Part 3 starts from this prototype: a menu first, score per round, then results and a desktop export.</p>
+<p><a href="https://www.patreon.com/LiGameAcademy/posts/godot-4-7-2-from-171292378">Part 1 on Patreon</a></p>
+<p><a href="https://www.patreon.com/LiGameAcademy/posts/godot-4-7-2-from-171293204">Original post and lesson attachments on Patreon</a></p>
+<!-- Source: community/patreon/tappy-plane/02-make-the-plane-fly.md · Patreon EN 2026-10-03 --> </article> </main> <footer class="shell bar"> <a href="https://space.bilibili.com/8618918">Bilibili</a> <a href="https://github.com/LiGameAcademy">GitHub</a> <a href="https://godot-li.itch.io/">itch.io</a> <a href="https://www.patreon.com/cw/LiGameAcademy">Patreon</a> </footer> <script type="module">document.querySelector("#theme")?.addEventListener("click",()=>{const e=document.documentElement,t=e.dataset.theme==="dark"?"light":"dark";e.dataset.theme=t;try{localStorage.setItem("laoli-theme",t)}catch{}});</script> </body> </html>

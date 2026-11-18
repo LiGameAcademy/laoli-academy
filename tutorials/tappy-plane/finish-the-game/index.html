@@ -1,0 +1,308 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Part 3 — Finish the game · Li Game Academy</title><script>
+      try { document.documentElement.dataset.theme = localStorage.getItem("laoli-theme") || "light"; } catch {}
+    </script><style>:root{color-scheme:light;--bg: #faf9f6;--fg: #171c24;--border: #d9d9d3;--panel: #fff;--accent: #245784}:root[data-theme=dark]{color-scheme:dark;--bg: #10151c;--fg: #f1f2f4;--border: #37424e;--panel: #1a222c;--accent: #9acafa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,sans-serif}a{color:var(--accent)}button{font:inherit;cursor:pointer}.shell{width:min(1100px,calc(100% - 32px));margin-inline:auto}.bar,.bar nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap}header.bar{justify-content:space-between;padding-block:20px}footer.bar{margin-block-start:64px;padding-block:20px;border-top:1px solid var(--border)}.brand{font-weight:750;color:inherit;text-decoration:none}.hero{display:grid;isolation:isolate;position:relative;align-items:end;min-height:clamp(310px,48vw,500px);overflow:hidden;border-radius:16px;color:#fff;background:#172630}.hero img,.hero:after{position:absolute;inset:0;width:100%;height:100%}.hero img{object-fit:cover;z-index:-2}.hero:after{content:"";background:linear-gradient(transparent,#080e14eb);z-index:-1}.hero>div{padding:clamp(20px,5vw,52px)}.hero h1{font-size:clamp(1.8rem,5vw,3rem);margin:0}.button{display:inline-block;background:#fff;color:#163550;border-radius:6px;padding:8px 14px;text-decoration:none}.home-series{margin-top:36px}.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}.catalog-header{display:flex;align-items:center;justify-content:space-between;gap:12px}#course-views button{border:1px solid var(--border);background:var(--panel);color:var(--fg);padding:4px 10px;border-radius:6px}#course-views button[aria-pressed=true]{background:var(--accent);color:var(--bg)}.course-card{flex-direction:column;justify-content:start;padding:0;gap:0;overflow:hidden;text-decoration:none}.course-card img{width:100%;height:auto;aspect-ratio:16 / 9;object-fit:cover}.course-copy{display:grid;gap:4px;padding:14px 18px}.course-grid[data-view=list]{grid-template-columns:minmax(0,1fr)}.course-grid[data-view=list] .course-card{flex-direction:row;align-items:center}.course-grid[data-view=list] img{width:clamp(96px,26%,208px);flex-shrink:0}.course-card:hover strong{text-decoration:underline}.course-card span{color:var(--fg)}.action-links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-block:16px}.project-preview{display:block;max-width:100%;height:auto;border-radius:12px}.panel{display:flex;gap:12px;justify-content:space-between;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:8px}.series li{padding-block:5px}.reading{display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;align-items:start}aside{padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px}aside ol,aside ul{padding-left:22px}aside [aria-current]{font-weight:750;color:var(--fg)}article{min-width:0;max-width:76ch;overflow-wrap:anywhere}article h1{line-height:1.25;margin-top:0}article img{max-width:100%;height:auto;border-radius:6px}article pre{overflow:auto;padding:16px;border-radius:8px}@media(max-width:720px){.reading{grid-template-columns:minmax(0,1fr);gap:20px}}
+</style></head> <body> <header class="shell bar"> <a class="brand" href="/laoli-academy/en/">Li Game Academy</a> <nav aria-label="Main navigation"> <a href="/laoli-academy/en/catalog/">Courses</a> <a href="/laoli-academy/en/#showcase">Projects &amp; source</a> <a href="/laoli-academy/courses/tappy-plane/" lang="zh-CN" hreflang="zh-CN">简体中文</a> <button id="theme" type="button">Toggle theme</button> </nav> </header> <main class="shell"> <p><a href="../../../courses/tappy-plane-en/">← Tappy Plane course overview</a></p> <div class="reading"> <aside> <nav aria-label="Course chapters"> <strong>Course chapters</strong> <ol> <li><a href="../create-project/">Create the project and import assets</a></li><li><a href="../make-the-plane-fly/">Make the plane fly</a></li><li><a href="../finish-the-game/" aria-current="page">Finish the game</a></li> </ol> </nav> <details> <summary>On this page</summary> <ul><li><a href="#1-state-the-round-in-plain-rules">1. State the round in plain rules</a></li><li><a href="#2-three-separate-screens">2. Three separate screens</a></li><li><a href="#3-put-ui-and-the-world-under-different-parents">3. Put UI and the world under different parents</a></li><li><a href="#4-connect-one-round-in-the-main-script">4. Connect one round in the main script</a></li><li><a href="#5-play-menu-through-retry">5. Play: menu through retry</a></li><li><a href="#6-export-for-people-who-do-not-have-the-editor">6. Export for people who do not have the editor</a></li><li><a href="#7-after-you-finish-pick-one-extra-task">7. After you finish, pick one extra task</a></li></ul> </details> </aside> <article> <h1>Part 3 — Finish the game</h1> <p>The plane already flies and hits obstacles. Players still need three real loops: where a round starts, how many points this round scored, and how to try again. This lesson wires those together, then covers desktop export and extra practice.</p>
+<p><img  src="/laoli-academy/_astro/03-menu.jwhVdMMK_1SP0ki.png" alt="Start menu from the finished lesson project" loading="lazy" decoding="async" fetchpriority="auto" width="1152" height="648"></p>
+<p>Continue from Part 2, or use the <code>02-flight</code> zip. This lesson ends at <code>03-complete</code>. Keep the plane, rocks, and GameConfig from Part 2. Replace only the main-scene controller and add UI. UI uses the same Kenney pictures as the reference project. Do not bring in a new art style.</p>
+<h2 id="1-state-the-round-in-plain-rules">1. State the round in plain rules</h2>
+<p>You need three states: menu, playing, game over. Scoring has one rule: while playing, add one point each second; after the round ends, stop.</p>
+<p>Those rules do not need to know buttons or audio. Create <code>src/rules/game_rules.gd</code>, inherit <code>RefCounted</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">class_name</span><span style="color:#B392F0"> GameRules</span></span>
+<span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> RefCounted</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">## Pure rules: no nodes, no waiting on sound or animation.</span></span>
+<span class="line"><span style="color:#F97583">enum</span><span style="color:#B392F0"> State</span><span style="color:#E1E4E8"> { </span><span style="color:#79B8FF">MENU</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">PLAYING</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">GAME_OVER</span><span style="color:#E1E4E8"> }</span></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> state: </span><span style="color:#B392F0">State</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> State</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">MENU</span></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> score: </span><span style="color:#B392F0">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 0</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> start</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	state </span><span style="color:#F97583">=</span><span style="color:#B392F0"> State</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">PLAYING</span></span>
+<span class="line"><span style="color:#E1E4E8">	score </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> tick</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> state </span><span style="color:#F97583">==</span><span style="color:#B392F0"> State</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">PLAYING</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">		score </span><span style="color:#F97583">+=</span><span style="color:#79B8FF"> 1</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> finish</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> bool</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> state </span><span style="color:#F97583">!=</span><span style="color:#B392F0"> State</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">PLAYING</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">		return</span><span style="color:#79B8FF"> false</span></span>
+<span class="line"><span style="color:#E1E4E8">	state </span><span style="color:#F97583">=</span><span style="color:#B392F0"> State</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">GAME_OVER</span></span>
+<span class="line"><span style="color:#F97583">	return</span><span style="color:#79B8FF"> true</span></span></code></pre>
+<p><code>enum</code> names a small set of states. <code>state: State</code> only accepts that enum. <code>start()</code> begins a round and zeros the score. <code>tick()</code> is one timer beat. <code>finish()</code> tries to end and returns whether the state <strong>actually</strong> changed.</p>
+<p>Why a bool on finish? The same frame can leave the screen <strong>and</strong> hit a rock. The second <code>finish()</code> returns false, so the outside code does not play the sting twice, clean twice, or show results twice.</p>
+<p>This class is not a node. Do not make a scene for it. Do not put it in the tree. It only stores and changes rule data. Hiding UI does not stop scoring. Sound length does not decide when a round ends.</p>
+<h2 id="2-three-separate-screens">2. Three separate screens</h2>
+<p>Build <code>menu_form.tscn</code>, <code>game_form.tscn</code>, and <code>popup_game_over.tscn</code> in <code>src/widgets</code>. Each root uses a matching script. Then you can edit one screen without walking the whole main tree.</p>
+<h3 id="21-main-menu-containers-layout-buttons-only-notify">2.1 Main menu: containers layout; buttons only notify</h3>
+<p>Root is Control named <code>MenuForm</code>, layout Full Rect. Center a MarginContainer. Inside it: background TextureRect, then VBoxContainer. Top of the VBox: two rows of letter textures. Bottom: vertical buttons.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>MenuForm (Control)</span></span>
+<span class="line"><span>└── MarginContainer (centered, min width 300)</span></span>
+<span class="line"><span>    ├── TextureRect (UIbg.png)</span></span>
+<span class="line"><span>    └── VBoxContainer</span></span>
+<span class="line"><span>        ├── MarginContainer2 / HBoxContainer (T A P P Y)</span></span>
+<span class="line"><span>        ├── MarginContainer3 / HBoxContainer (P L A N E)</span></span>
+<span class="line"><span>        └── MarginContainer / VBoxContainer</span></span>
+<span class="line"><span>            ├── btn_new_game (TextureButton with Label)</span></span>
+<span class="line"><span>            └── btn_quit (TextureButton with Label)</span></span></code></pre>
+<p>Do not fight containers by dragging widgets around. They re-flow children. Use Custom Minimum Size, Size Flags, and Margins. Letter art: <code>assets/textures/widgets/letters</code>. Panels and buttons: <code>widgets/others</code>. Button Texture Normal: <code>yellow_button00.png</code>, Ignore Texture Size on, min size <code>(100, 30)</code>. Inner Label: Full Rect, center horizontally and vertically.</p>
+<p>You can point LabelSettings at <code>assets/fonts/new_font_variation.tres</code> and add a black outline. The title uses pictures, not a font, so the colored look from the original project stays.</p>
+<p><code>menu_form.gd</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> Control</span></span>
+<span class="line"><span style="color:#F97583">class_name</span><span style="color:#B392F0"> MenuForm</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">signal</span><span style="color:#B392F0"> btn_new_game_pressed</span></span>
+<span class="line"><span style="color:#F97583">signal</span><span style="color:#B392F0"> btn_quit_pressed</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_btn_new_game_pressed</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	btn_new_game_pressed.</span><span style="color:#B392F0">emit</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_btn_quit_pressed</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	btn_quit_pressed.</span><span style="color:#B392F0">emit</span><span style="color:#E1E4E8">()</span></span></code></pre>
+<p>In the Node signals dock, connect each button’s <code>pressed</code> to those callbacks. The callbacks only forward signals. They do <strong>not</strong> call <code>new_game</code> on a parent. The menu does not need to know who spawns the plane.</p>
+<h3 id="22-in-game-score-data-changing-is-not-the-ui-counting-by-itself">2.2 In-game score: data changing is not the UI counting by itself</h3>
+<p>New Control root <code>GameForm</code>, Full Rect. Add an HBoxContainer named <code>ScoreContainer</code> at the top. Right-click ScoreContainer → Access as Unique Name so <code>%ScoreContainer</code> works in the script.</p>
+<p>Keep the lesson layout: top-center anchors, Offset Left -40, Top 8, Right 127, Bottom 86, Scale <code>(0.3, 0.3)</code>. Place one TextureRect inside with <code>number0.png</code>.</p>
+<p>Set Mouse Filter to <strong>Ignore</strong> on GameForm, ScoreContainer, and the digit TextureRects. Score is decoration. It must not steal clicks from the plane.</p>
+<p><code>game_form.gd</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">class_name</span><span style="color:#B392F0"> GameForm</span></span>
+<span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> Control</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> score_container: </span><span style="color:#B392F0">HBoxContainer</span><span style="color:#F97583"> =</span><span style="color:#F97583"> %</span><span style="color:#79B8FF">ScoreContainer</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> NUMBER_TEXTURES</span><span style="color:#E1E4E8">: </span><span style="color:#B392F0">Array</span><span style="color:#E1E4E8">[</span><span style="color:#B392F0">Texture2D</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span></span>
+<span class="line"><span style="color:#F97583">	preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://assets/textures/widgets/numbers/number0.png"</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#F97583">	preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://assets/textures/widgets/numbers/number1.png"</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#F97583">	preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://assets/textures/widgets/numbers/number2.png"</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#F97583">	preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://assets/textures/widgets/numbers/number3.png"</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#F97583">	preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://assets/textures/widgets/numbers/number4.png"</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#F97583">	preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://assets/textures/widgets/numbers/number5.png"</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#F97583">	preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://assets/textures/widgets/numbers/number6.png"</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#F97583">	preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://assets/textures/widgets/numbers/number7.png"</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#F97583">	preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://assets/textures/widgets/numbers/number8.png"</span><span style="color:#E1E4E8">),</span></span>
+<span class="line"><span style="color:#F97583">	preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://assets/textures/widgets/numbers/number9.png"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> update_score_display</span><span style="color:#E1E4E8">(score: </span><span style="color:#B392F0">int</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	var</span><span style="color:#E1E4E8"> digits: </span><span style="color:#B392F0">String</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> str</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">maxi</span><span style="color:#E1E4E8">(score, </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">))</span></span>
+<span class="line"><span style="color:#6A737D">	# Remove extras first so this loop sees the correct child count immediately.</span></span>
+<span class="line"><span style="color:#F97583">	while</span><span style="color:#E1E4E8"> score_container.</span><span style="color:#B392F0">get_child_count</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">></span><span style="color:#E1E4E8"> digits.</span><span style="color:#B392F0">length</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#F97583">		var</span><span style="color:#E1E4E8"> extra: </span><span style="color:#B392F0">Node</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> score_container.</span><span style="color:#B392F0">get_child</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">-</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">		score_container.</span><span style="color:#B392F0">remove_child</span><span style="color:#E1E4E8">(extra)</span></span>
+<span class="line"><span style="color:#E1E4E8">		extra.</span><span style="color:#B392F0">queue_free</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#F97583">	while</span><span style="color:#E1E4E8"> score_container.</span><span style="color:#B392F0">get_child_count</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> digits.</span><span style="color:#B392F0">length</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#F97583">		var</span><span style="color:#E1E4E8"> picture: </span><span style="color:#B392F0">TextureRect</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> TextureRect</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">new</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">		picture.mouse_filter </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Control</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">MOUSE_FILTER_IGNORE</span></span>
+<span class="line"><span style="color:#E1E4E8">		score_container.</span><span style="color:#B392F0">add_child</span><span style="color:#E1E4E8">(picture)</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> index: </span><span style="color:#B392F0">int</span><span style="color:#F97583"> in</span><span style="color:#B392F0"> range</span><span style="color:#E1E4E8">(digits.</span><span style="color:#B392F0">length</span><span style="color:#E1E4E8">()):</span></span>
+<span class="line"><span style="color:#F97583">		var</span><span style="color:#E1E4E8"> picture: </span><span style="color:#B392F0">TextureRect</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> score_container.</span><span style="color:#B392F0">get_child</span><span style="color:#E1E4E8">(index) </span><span style="color:#F97583">as</span><span style="color:#B392F0"> TextureRect</span></span>
+<span class="line"><span style="color:#E1E4E8">		picture.texture </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> NUMBER_TEXTURES</span><span style="color:#E1E4E8">[</span><span style="color:#B392F0">int</span><span style="color:#E1E4E8">(digits[index])]</span></span></code></pre>
+<p>The integer becomes a string, for example 20 → <code>"2"</code> and <code>"0"</code>. Then pick textures by index. Each update first fixes child count, then swaps textures.</p>
+<p>You cannot only handle “9 becomes 10.” Retrying “100 becomes 0” must <strong>remove</strong> two pictures. <code>remove_child</code> then <code>queue_free</code> so this loop already sees the right count, without waiting until the end of the frame.</p>
+<p>The textures are read-only. Sharing them across digit nodes is fine. You only change each node’s <code>texture</code> property. You do not edit the image resource.</p>
+<h3 id="23-results-show-the-final-score-retry-and-quit">2.3 Results: show the final score, Retry and Quit</h3>
+<p>New MarginContainer root <code>PopupGameOver</code>, centered:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>PopupGameOver (MarginContainer)</span></span>
+<span class="line"><span>├── TextureRect (UIbg.png)</span></span>
+<span class="line"><span>└── MarginContainer (left/right 10, top/bottom 5)</span></span>
+<span class="line"><span>    └── VBoxContainer</span></span>
+<span class="line"><span>        ├── TextureRect (textGameOver.png)</span></span>
+<span class="line"><span>        ├── ScoreLabel (Label, unique name)</span></span>
+<span class="line"><span>        └── HBoxContainer</span></span>
+<span class="line"><span>            ├── BtnQuit (TextureButton, Label “Quit”)</span></span>
+<span class="line"><span>            └── BtnRetry (TextureButton, Label “Retry”)</span></span></code></pre>
+<p>Background min size <code>(220, 130)</code>, title min size <code>(160, 60)</code>, buttons <code>(60, 30)</code> with Expand + Fill horizontally. ScoreLabel centered, font size 22, black outline. Unique name on.</p>
+<p><code>popup_game_over.gd</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> MarginContainer</span></span>
+<span class="line"><span style="color:#F97583">class_name</span><span style="color:#B392F0"> PopupGameOver</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> score_label: </span><span style="color:#B392F0">Label</span><span style="color:#F97583"> =</span><span style="color:#F97583"> %</span><span style="color:#79B8FF">ScoreLabel</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">signal</span><span style="color:#B392F0"> quit_pressed</span></span>
+<span class="line"><span style="color:#F97583">signal</span><span style="color:#B392F0"> retry_pressed</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> update_score</span><span style="color:#E1E4E8">(score: </span><span style="color:#B392F0">int</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	score_label.text </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> "Score: "</span><span style="color:#F97583"> +</span><span style="color:#B392F0"> str</span><span style="color:#E1E4E8">(score)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_btn_quit_pressed</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	quit_pressed.</span><span style="color:#B392F0">emit</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_btn_retry_pressed</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	retry_pressed.</span><span style="color:#B392F0">emit</span><span style="color:#E1E4E8">()</span></span></code></pre>
+<p>Connect <code>BtnQuit.pressed</code> and <code>BtnRetry.pressed</code> to those callbacks. <code>update_score</code> only displays a number. It does not measure survival time.</p>
+<h3 id="24-matching-the-screenshots-exactly">2.4 Matching the screenshots exactly</h3>
+<p>The notes above are enough to build and understand the tree. To match screenshots, finish the three scripts first, then copy the three <code>.tscn</code> files from <code>03-complete/src/widgets</code> into the same paths in your practice project. Copy <strong>only</strong> those three scenes. Do not overwrite the whole practice project.</p>
+<p>The scene files keep exact container values, letter colors, texture refs, and inner button signals. You can still open and edit every node. The zip is not a locked picture. If you build by hand, node names and signal callbacks must match the scripts.</p>
+<p><img  src="/laoli-academy/_astro/03-editor-main.Dl2bUbuY_1TeX2D.png" alt="Full main scene tree in the editor" loading="lazy" decoding="async" fetchpriority="auto" width="1794" height="1082"></p>
+<h2 id="3-put-ui-and-the-world-under-different-parents">3. Put UI and the world under different parents</h2>
+<p>Back in <code>game.tscn</code>. Under Game, add a CanvasLayer named <code>UICanvasLayer</code>, Layer <strong>64</strong>. Instance the three UI scenes under it. Start GameForm and PopupGameOver with <strong>Visible off</strong>.</p>
+<p>Add ScoreTimer: Wait Time 1, One Shot off, Autostart off. Add AudioGameOver: Stream <code>assets/audio/sound/gameover2.ogg</code>, Bus SFX, Autoplay off.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Game</span></span>
+<span class="line"><span>├── World</span></span>
+<span class="line"><span>│   ├── Parallax2D / Background</span></span>
+<span class="line"><span>│   └── Actors</span></span>
+<span class="line"><span>├── SpawnTimer</span></span>
+<span class="line"><span>├── AudioBgm</span></span>
+<span class="line"><span>├── ScoreTimer</span></span>
+<span class="line"><span>├── AudioGameOver</span></span>
+<span class="line"><span>└── UICanvasLayer</span></span>
+<span class="line"><span>    ├── MenuForm</span></span>
+<span class="line"><span>    ├── GameForm</span></span>
+<span class="line"><span>    └── PopupGameOver</span></span></code></pre>
+<p>World is the play space you can freeze as a whole. UI and timers are siblings. On game over we stop World processing and stop both timers; UI still responds. That is easier to explain than pausing the entire tree and then un-pausing buttons one by one.</p>
+<h2 id="4-connect-one-round-in-the-main-script">4. Connect one round in the main script</h2>
+<p><strong>Replace all of</strong> <code>game.gd</code>. Do not keep Part 2 <code>_restart()</code>, <code>restarting</code>, or a <code>_ready()</code> that auto-starts a round. Game Config is still <code>default_game_config.tres</code>.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="gdscript"><code><span class="line"><span style="color:#F97583">extends</span><span style="color:#B392F0"> Node2D</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> PLANE_SCENE</span><span style="color:#E1E4E8">: </span><span style="color:#B392F0">PackedScene</span><span style="color:#F97583"> =</span><span style="color:#F97583"> preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://src/entities/plane.tscn"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> ROCK_SCENE</span><span style="color:#E1E4E8">: </span><span style="color:#B392F0">PackedScene</span><span style="color:#F97583"> =</span><span style="color:#F97583"> preload</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"res://src/entities/rock.tscn"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">@export</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> config: </span><span style="color:#B392F0">GameConfig</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> world: </span><span style="color:#B392F0">Node2D</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">World</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> actors: </span><span style="color:#B392F0">Node2D</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">World/Actors</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> spawn_timer: </span><span style="color:#B392F0">Timer</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">SpawnTimer</span></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> plane: </span><span style="color:#B392F0">TappyPlane</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> score_timer: </span><span style="color:#B392F0">Timer</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">ScoreTimer</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> menu_form: </span><span style="color:#B392F0">MenuForm</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">UICanvasLayer/MenuForm</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> game_form: </span><span style="color:#B392F0">GameForm</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">UICanvasLayer/GameForm</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> popup_game_over: </span><span style="color:#B392F0">PopupGameOver</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">UICanvasLayer/PopupGameOver</span></span>
+<span class="line"><span style="color:#B392F0">@onready</span><span style="color:#F97583"> var</span><span style="color:#E1E4E8"> audio_game_over: </span><span style="color:#B392F0">AudioStreamPlayer</span><span style="color:#F97583"> =</span><span style="color:#F97583"> $</span><span style="color:#79B8FF">AudioGameOver</span></span>
+<span class="line"><span style="color:#F97583">var</span><span style="color:#E1E4E8"> rules: </span><span style="color:#B392F0">GameRules</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> GameRules</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">new</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">#region Lifecycle</span></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _ready</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	spawn_timer.timeout.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(_on_spawn_timeout)</span></span>
+<span class="line"><span style="color:#E1E4E8">	score_timer.timeout.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(_on_score_timeout)</span></span>
+<span class="line"><span style="color:#E1E4E8">	menu_form.btn_new_game_pressed.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(new_game)</span></span>
+<span class="line"><span style="color:#E1E4E8">	menu_form.btn_quit_pressed.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(quit_game)</span></span>
+<span class="line"><span style="color:#E1E4E8">	popup_game_over.retry_pressed.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(new_game)</span></span>
+<span class="line"><span style="color:#E1E4E8">	popup_game_over.quit_pressed.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(quit_game)</span></span>
+<span class="line"><span style="color:#E1E4E8">	menu_form.</span><span style="color:#B392F0">show</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	game_form.</span><span style="color:#B392F0">hide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	popup_game_over.</span><span style="color:#B392F0">hide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _process</span><span style="color:#E1E4E8">(_delta: </span><span style="color:#B392F0">float</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> rules.state </span><span style="color:#F97583">==</span><span style="color:#B392F0"> GameRules</span><span style="color:#E1E4E8">.State.</span><span style="color:#79B8FF">PLAYING</span><span style="color:#F97583"> and</span><span style="color:#B392F0"> is_instance_valid</span><span style="color:#E1E4E8">(plane):</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#E1E4E8"> plane.position.y </span><span style="color:#F97583">&#x3C;=</span><span style="color:#79B8FF"> 0.0</span><span style="color:#F97583"> or</span><span style="color:#E1E4E8"> plane.position.y </span><span style="color:#F97583">>=</span><span style="color:#B392F0"> get_viewport_rect</span><span style="color:#E1E4E8">().size.y:</span></span>
+<span class="line"><span style="color:#B392F0">			_on_hit</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#F97583">#endregion</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">#region Public</span></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> new_game</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#B392F0">	_clear_actors</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	rules.</span><span style="color:#B392F0">start</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	world.process_mode </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Node</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">PROCESS_MODE_INHERIT</span></span>
+<span class="line"><span style="color:#E1E4E8">	menu_form.</span><span style="color:#B392F0">hide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	popup_game_over.</span><span style="color:#B392F0">hide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	game_form.</span><span style="color:#B392F0">show</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	game_form.</span><span style="color:#B392F0">update_score_display</span><span style="color:#E1E4E8">(rules.score)</span></span>
+<span class="line"><span style="color:#B392F0">	_spawn_plane</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#B392F0">	_schedule_rock</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	score_timer.</span><span style="color:#B392F0">start</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> quit_game</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#B392F0">	get_tree</span><span style="color:#E1E4E8">().</span><span style="color:#B392F0">quit</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#F97583">#endregion</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">#region Signals and spawn</span></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_hit</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#F97583"> not</span><span style="color:#E1E4E8"> rules.</span><span style="color:#B392F0">finish</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#F97583">		return</span></span>
+<span class="line"><span style="color:#E1E4E8">	spawn_timer.</span><span style="color:#B392F0">stop</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	score_timer.</span><span style="color:#B392F0">stop</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	world.</span><span style="color:#B392F0">set_deferred</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"process_mode"</span><span style="color:#E1E4E8">, </span><span style="color:#B392F0">Node</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">PROCESS_MODE_DISABLED</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">	audio_game_over.</span><span style="color:#B392F0">play</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	game_form.</span><span style="color:#B392F0">hide</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	popup_game_over.</span><span style="color:#B392F0">update_score</span><span style="color:#E1E4E8">(rules.score)</span></span>
+<span class="line"><span style="color:#E1E4E8">	popup_game_over.</span><span style="color:#B392F0">show</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	_clear_actors.</span><span style="color:#B392F0">call_deferred</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_spawn_timeout</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#E1E4E8"> rules.state </span><span style="color:#F97583">==</span><span style="color:#B392F0"> GameRules</span><span style="color:#E1E4E8">.State.</span><span style="color:#79B8FF">PLAYING</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#B392F0">		_spawn_rock</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#B392F0">		_schedule_rock</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _on_score_timeout</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	rules.</span><span style="color:#B392F0">tick</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	game_form.</span><span style="color:#B392F0">update_score_display</span><span style="color:#E1E4E8">(rules.score)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _spawn_plane</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	plane </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> PLANE_SCENE</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">instantiate</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">as</span><span style="color:#B392F0"> TappyPlane</span></span>
+<span class="line"><span style="color:#E1E4E8">	plane.config </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> config</span></span>
+<span class="line"><span style="color:#E1E4E8">	plane.position </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> config.plane_start</span></span>
+<span class="line"><span style="color:#E1E4E8">	actors.</span><span style="color:#B392F0">add_child</span><span style="color:#E1E4E8">(plane)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _spawn_rock</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	var</span><span style="color:#E1E4E8"> rock: </span><span style="color:#B392F0">Rock</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> ROCK_SCENE</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">instantiate</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">as</span><span style="color:#B392F0"> Rock</span></span>
+<span class="line"><span style="color:#E1E4E8">	rock.config </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> config</span></span>
+<span class="line"><span style="color:#E1E4E8">	rock.rock_entered.</span><span style="color:#B392F0">connect</span><span style="color:#E1E4E8">(_on_hit)</span></span>
+<span class="line"><span style="color:#F97583">	if</span><span style="color:#B392F0"> randi_range</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">		rock.position </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Vector2</span><span style="color:#E1E4E8">(config.spawn_x,</span></span>
+<span class="line"><span style="color:#B392F0">			randf_range</span><span style="color:#E1E4E8">(config.bottom_y.x, config.bottom_y.y))</span></span>
+<span class="line"><span style="color:#F97583">	else</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">		rock.rotation_degrees </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 180.0</span></span>
+<span class="line"><span style="color:#E1E4E8">		rock.position </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Vector2</span><span style="color:#E1E4E8">(config.spawn_x,</span></span>
+<span class="line"><span style="color:#B392F0">			randf_range</span><span style="color:#E1E4E8">(config.top_y.x, config.top_y.y))</span></span>
+<span class="line"><span style="color:#E1E4E8">	actors.</span><span style="color:#B392F0">add_child</span><span style="color:#E1E4E8">(rock)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _schedule_rock</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">	spawn_timer.</span><span style="color:#B392F0">start</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">randf_range</span><span style="color:#E1E4E8">(config.spawn_interval.x, config.spawn_interval.y))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> _clear_actors</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">-></span><span style="color:#B392F0"> void</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> actor: </span><span style="color:#B392F0">Node</span><span style="color:#F97583"> in</span><span style="color:#E1E4E8"> actors.</span><span style="color:#B392F0">get_children</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#E1E4E8">		actors.</span><span style="color:#B392F0">remove_child</span><span style="color:#E1E4E8">(actor)</span></span>
+<span class="line"><span style="color:#E1E4E8">		actor.</span><span style="color:#B392F0">queue_free</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">	plane </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> null</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">#endregion</span></span></code></pre>
+<h3 id="read-it-in-run-order">Read it in run order</h3>
+<p>First <code>_ready()</code> only connects signals and shows the menu. No plane yet. “New Game” makes MenuForm emit; Game runs <code>new_game</code>: clear old actors, reset rules, restore World, switch UI, spawn the plane, start spawn and score timers.</p>
+<p>SpawnTimer timeout only makes rocks. ScoreTimer timeout calls <code>rules.tick()</code>, then GameForm displays the score. The UI does <strong>not</strong> run its own score timer.</p>
+<p>Collision or leaving the view both go to <code>_on_hit()</code>. <code>rules.finish()</code> must succeed first. Then stop timers, defer-disable World, play the sting, show results. <code>set_deferred()</code> and <code>call_deferred()</code> on cleanup matter: a real hit can arrive <strong>inside</strong> a physics callback. Disabling a collider in that moment errors.</p>
+<p>Retry still calls <code>new_game</code>. The new plane has its own zero velocity and spawn point. You do not patch a plane you already freed.</p>
+<h3 id="connect-each-signal-once">Connect each signal once</h3>
+<ul>
+<li>Menu buttons <code>pressed</code> — connect in <code>menu_form.tscn</code> to the menu callbacks</li>
+<li>Result buttons <code>pressed</code> — connect in <code>popup_game_over.tscn</code> to the popup callbacks</li>
+<li>MenuForm custom signals — connect in <code>Game._ready</code> to <code>new_game</code> / <code>quit_game</code></li>
+<li>PopupGameOver custom signals — connect in <code>Game._ready</code> to <code>new_game</code> / <code>quit_game</code></li>
+<li>SpawnTimer / ScoreTimer <code>timeout</code> — connect in <code>Game._ready</code> to the two timer callbacks</li>
+<li><code>Rock.body_entered</code> — connect in <code>rock.tscn</code> to Rock’s own check</li>
+<li><code>Rock.rock_entered</code> — connect each time you spawn a rock to <code>Game._on_hit</code></li>
+</ul>
+<p>If the table says “in code,” do not also connect it in the editor. One click would start two rounds; one tick would add two points.</p>
+<h3 id="pitfall-retry-does-nothing-if-you-pause-the-whole-tree">Pitfall: Retry does nothing if you pause the whole tree</h3>
+<p>The <strong>lesson script above</strong> freezes play by setting <code>World.process_mode</code> to disabled. UI stays a sibling, so buttons still work.</p>
+<p>Some shipped demos instead call <code>get_tree().paused = true</code>. A CanvasLayer <strong>inherits pause</strong> by default, so <code>PopupGameOver</code> is visible but never gets <code>pressed</code>.</p>
+<p>If you use tree pause, set <code>UICanvasLayer.process_mode</code> to <code>PROCESS_MODE_ALWAYS</code> (<code>3</code>) so the results layer still processes while the tree is paused. Pause <strong>and</strong> ALWAYS must travel together. The lesson code does not need that pair unless you switch to <code>get_tree().paused</code>.</p>
+<h2 id="5-play-menu-through-retry">5. Play: menu through retry</h2>
+<p><img  src="/laoli-academy/_astro/03-playing.BdOpm95V_Z6dRTK.png" alt="About two seconds into a real run" loading="lazy" decoding="async" fetchpriority="auto" width="1152" height="648"></p>
+<p>Start a game. Hold height with Space or left click. Watch the score rise once per second. Time scoring does not require passing a rock. Then stop flapping and let the plane leave the view.</p>
+<p><img  src="/laoli-academy/_astro/03-game-over.wRrJPa6g_Z1XRLJE.png" alt="Natural fall, final score on the results panel" loading="lazy" decoding="async" fetchpriority="auto" width="1152" height="648"></p>
+<p>The result score must stay still. Background scroll stops. Both buttons still click. Retry: score back to 0, one plane, no rocks from the last round.</p>
+<p><img  src="/laoli-academy/_astro/03-retry.Drj1e6NO_6nUPo.png" alt="A new round after Retry, score cleared" loading="lazy" decoding="async" fetchpriority="auto" width="1152" height="648"></p>
+<p>Play at least three rounds. Then force: leave the top, leave the bottom, hit a rock. All three should reach the same results screen. If score jumps too fast, look for double signal connections. If Retry does nothing, look for leftover <code>get_tree().paused = true</code> without ALWAYS on the UI layer. If extra digits remain, check that the update function removed extra nodes.</p>
+<h2 id="6-export-for-people-who-do-not-have-the-editor">6. Export for people who do not have the editor</h2>
+<p>Running from the editor and exporting are different jobs. Export builds a program and data you can hand to someone else.</p>
+<ol>
+<li>Save every scene. <strong>Editor → Manage Export Templates</strong> and install templates that match <strong>4.7.2</strong> (or whatever editor you actually use). For Windows pick x86_64. Chinese locale installs may also need ICU Data from the template manager. On a Mono editor, watch the export panel’s Mono template path. Do not mix versions.</li>
+<li><strong>Project → Export</strong>, add <strong>Windows Desktop</strong>. Architecture should match the target PC. Typical Intel/AMD Windows is x86_64.</li>
+<li>Resources: Export All Resources. This practice project is the game only. Do not pack paid articles or screenshots into the game.</li>
+<li>Export to a separate folder, for example <code>exports/TappyPlane.exe</code>. Fix missing-template warnings. Do not ignore red rows.</li>
+<li>Use <strong>Export Project</strong>. Export PCK/ZIP is only a data pack. It is not a double-clickable game.</li>
+<li>Close the editor. Launch the exported program. Recheck start, score, fail, retry, quit. If a <code>.pck</code> or other sidecar files appear, ship them together.</li>
+</ol>
+<p><img  src="/laoli-academy/_astro/03-editor-export.BdGxIzQJ_ZBJzvD.png" alt="Export presets in a local Godot" loading="lazy" decoding="async" fetchpriority="auto" width="1577" height="927"></p>
+<p>The zip with this lesson is a <strong>run-checked source project</strong>. It does not claim your PC already has export templates. If a screenshot shows missing templates, that is the environment you still need — not a finished retail build. See <a href="https://docs.godotengine.org/en/4.7/tutorials/export/exporting_projects.html">Exporting projects</a>.</p>
+<p><strong>Case-sensitive paths:</strong> Windows editor ignores <code>rock.tscn</code> vs <code>Rock.tscn</code>. The exported <code>.pck</code> does not. Keep <code>preload()</code> paths identical to filenames. After export, run the <strong>console</strong> exe once and look for <code>Preload file does not exist</code>.</p>
+<h2 id="7-after-you-finish-pick-one-extra-task">7. After you finish, pick one extra task</h2>
+<p>Close the article. From memory, name four things: who spawns the plane, who detects hits, who stores the score, who shows the score. Explaining how methods and signals share work is more useful than reciting the whole script.</p>
+<p>Rebuild from an empty project: plane, one obstacle, fail, retry. Same art is allowed. Do not copy the finished project wholesale.</p>
+<p>Then pick one extra:</p>
+<ul>
+<li><strong>Save high score</strong> — survives restart; a lower score cannot overwrite</li>
+<li><strong>Ramp difficulty</strong> — parameters have a cap; layout stays passable</li>
+<li><strong>Swap plane looks</strong> — two instances can differ; feel stays the same; changing A does not mutate B’s unique resources</li>
+<li><strong>Score for passing rocks</strong> — each rock counts at most once; no points after the round ends</li>
+</ul>
+<p>The fourth task changes the original scoring rule. Write the new rule down before you edit. When you are done, share a short clip, a short implementation note, and one bug you found and fixed.</p>
+<p>The project is small, but it is a full game loop. When you add high scores, difficulty, or new looks, keep the same split: rules store data, objects do their job, UI shows the result.</p>
+<!-- Source: community/patreon/tappy-plane/03-finish-the-game.md · Patreon EN 2026-10-03 --> <p><a href="https://www.patreon.com/LiGameAcademy/posts/godot-4-7-2-from-171294079">Original post and lesson attachments on Patreon</a></p> <nav class="action-links" aria-label="Previous and next chapters"> <a href="../make-the-plane-fly/">← Part 2 — Make the plane fly</a>  </nav> </article> </div> </main> <footer class="shell bar"> <a href="https://space.bilibili.com/8618918">Bilibili</a> <a href="https://github.com/LiGameAcademy">GitHub</a> <a href="https://godot-li.itch.io/">itch.io</a> <a href="https://www.patreon.com/cw/LiGameAcademy">Patreon</a> </footer> <script type="module">document.querySelector("#theme")?.addEventListener("click",()=>{const e=document.documentElement,t=e.dataset.theme==="dark"?"light":"dark";e.dataset.theme=t;try{localStorage.setItem("laoli-theme",t)}catch{}});</script> </body> </html>
